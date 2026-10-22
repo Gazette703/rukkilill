@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rukkilill</title>
+<meta name="description" content="Эстонский до B2: карточки, перевод предложений и словарь">
+<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e121b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rukkilill">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: one-column phone app, sticky top bar, fixed bottom tab bar; rukkilill (cornflower) accent on cold Baltic neutrals */
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --sunk:#e7ebf3; --fg:#141a26; --muted:#5b6578; --line:#d5dbe6;
+  --accent:#3d5bd9; --accent-fg:#ffffff; --accent-soft:#e3e8fc;
+  --good:#1f8a5b; --good-soft:#ddf3e8; --warn:#b46a0c; --warn-soft:#fbeedb; --bad:#c23a3a; --bad-soft:#f9e1e1;
+  --f-display:"Unbounded",system-ui,sans-serif; --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px; --shadow:0 1px 2px rgba(20,26,38,.06),0 6px 20px rgba(20,26,38,.07);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e121b; --surface:#171d2a; --sunk:#1f2737; --fg:#e8ecf4; --muted:#98a2b6; --line:#2a3346;
+  --accent:#8ea2ff; --accent-fg:#0e121b; --accent-soft:#232d4d;
+  --good:#5fd19c; --good-soft:#163428; --warn:#f0b35a; --warn-soft:#3a2b14; --bad:#ff8a8a; --bad-soft:#3d1c1f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e121b; --surface:#171d2a; --sunk:#1f2737; --fg:#e8ecf4; --muted:#98a2b6; --line:#2a3346;
+  --accent:#8ea2ff; --accent-fg:#0e121b; --accent-soft:#232d4d;
+  --good:#5fd19c; --good-soft:#163428; --warn:#f0b35a; --warn-soft:#3a2b14; --bad:#ff8a8a; --bad-soft:#3d1c1f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px)}
+html,body{min-height:100%}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px 10px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.brand svg{flex:none}
+.stat{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.stat b{color:var(--fg);font-weight:600}
+main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+main .wrap{display:flex;flex-direction:column;gap:16px;padding-block:4px 16px}
+h2{font-family:var(--f-display);font-size:20px;font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;margin:4px 0 0}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+
+/* chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-inline:-2px;padding-inline:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:14px;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.chip small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.7}
+.seg{display:flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px}
+.seg button{flex:1;border:0;background:none;border-radius:999px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow);font-weight:600}
+
+/* flashcard */
+.card-stage{perspective:1200px}
+.fcard{position:relative;width:100%;min-height:300px;border:0;padding:0;background:none;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.7,.2,1);display:block;text-align:left}
+.fcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:12px}
+.face.back{transform:rotateY(180deg)}
+.face .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lvl{font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.box{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.word{font-family:var(--f-display);font-weight:500;font-size:clamp(28px,8vw,38px);line-height:1.15;margin:auto 0;word-break:break-word;letter-spacing:-.015em}
+.hint{font-size:13px;color:var(--muted);text-align:center}
+.forms{font-size:14px;color:var(--muted)}
+.forms b{color:var(--fg);font-weight:600}
+.ex{border-top:1px dashed var(--line);padding-top:10px;font-size:15px}
+.ex .ru{color:var(--muted);font-size:14px}
+.trans{font-size:24px;font-weight:600;line-height:1.25}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:var(--r);padding:14px 16px;font-weight:600;font-size:16px;background:var(--sunk);color:var(--fg);display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px}
+.btn.primary{background:var(--accent);color:var(--accent-fg)}
+.btn.bad{background:var(--bad-soft);color:var(--bad)}
+.btn.good{background:var(--good-soft);color:var(--good)}
+.btn.ghost{background:none;border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.sm{padding:8px 12px;min-height:38px;font-size:14px;border-radius:10px}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:38px;height:38px;display:grid;place-items:center;flex:none}
+.done{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;text-align:center;align-items:center}
+.done .big{font-family:var(--f-display);font-size:42px;color:var(--accent)}
+
+/* progress */
+.ladder{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ladder div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center}
+.ladder b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.ladder span{font-size:11px;color:var(--muted)}
+
+/* sentences */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.prompt{font-size:21px;font-weight:600;line-height:1.35}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;background:var(--sunk);border-radius:6px;padding:3px 8px;color:var(--muted)}
+textarea{width:100%;min-height:96px;resize:vertical;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:17px;line-height:1.4}
+input[type=search]{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:13px 14px 13px 42px;font-size:17px}
+.verdict{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.verdict.correct{background:var(--good-soft)}
+.verdict.almost{background:var(--warn-soft)}
+.verdict.wrong{background:var(--bad-soft)}
+.verdict .head{font-weight:700;display:flex;gap:8px;align-items:center}
+.verdict.correct .head{color:var(--good)} .verdict.almost .head{color:var(--warn)} .verdict.wrong .head{color:var(--bad)}
+.verdict .ref{font-weight:600}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.end{justify-content:flex-end}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.thinking{color:var(--muted);font-size:14px;display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1s infinite alternate}
+@keyframes pulse{from{opacity:.25}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.fcard{transition:none}.dot{animation:none}}
+.note{font-size:13px;color:var(--muted)}
+
+/* dictionary */
+.search{position:relative}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .et{font-weight:600}
+.item .ru{color:var(--muted);font-size:14px}
+.item > div{min-width:0}
+.entry h3{font-family:var(--f-display);font-weight:500;font-size:26px;margin:0;word-break:break-word}
+.entry .pos{font-size:13px;color:var(--muted)}
+.formsgrid{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.formsgrid dt{color:var(--muted)} .formsgrid dd{margin:0;font-weight:600}
+
+/* tabbar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{border:0;background:none;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;color:var(--muted);font-weight:500}
+nav.tabs button[aria-current="page"]{color:var(--accent);font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px);text-align:center}
+select{font:inherit;color:inherit;width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px}
+input[type=password],input[type=text]{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+a{color:var(--accent)}
+.ok{color:var(--good);font-weight:600}.err{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><g fill="var(--accent)"><circle cx="13" cy="13" r="3.2"/><path d="M13 1.5l2 6.2h-4zM13 24.5l-2-6.2h4zM1.5 13l6.2-2v4zM24.5 13l-6.2 2v-4zM4.9 4.9l5.8 3-2.8 2.8zM21.1 21.1l-5.8-3 2.8-2.8zM21.1 4.9l-3 5.8-2.8-2.8zM4.9 21.1l3-5.8 2.8 2.8z"/></g></svg>
+    Rukkilill
+  </div>
+  <div class="stat" id="stat"></div>
+</div></header>
+
+<main>
+  <section class="wrap" id="v-cards"></section>
+  <section class="wrap" id="v-sent" hidden></section>
+  <section class="wrap" id="v-dict" hidden></section>
+  <section class="wrap" id="v-settings" hidden></section>
+</main>
+
+<nav class="tabs" aria-label="Разделы"><div class="in">
+  <button data-tab="cards" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="14" height="15" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v13"/></svg>Карточки</button>
+  <button data-tab="sent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Предложения</button>
+  <button data-tab="dict"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a2 2 0 0 0-2 2"/><path d="M20 4v14h-6"/></svg>Словарь</button>
+  <button data-tab="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Настройки</button>
+</div></nav>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import Anthropic from "./vendor/anthropic.js";
+// ---------- Vocabulary: [et, ru, level, forms(gen/part or da-inf/1sg)] ----------
+const TOPICS = [
+ {id:"base", name:"Основа", words:[
+  ["maja","дом","A2","maja · maja"],["pere","семья","A2","pere · peret"],["sõber","друг","A2","sõbra · sõpra"],
+  ["töö","работа","A2","töö · tööd"],["aeg","время","A2","aja · aega"],["päev","день","A2","päeva · päeva"],
+  ["nädal","неделя","A2","nädala · nädalat"],["aasta","год","A2","aasta · aastat"],["raha","деньги","A2","raha · raha"],
+  ["linn","город","A2","linna · linna"],["tee","чай; дорога","A2","tee · teed"],["keel","язык","A2","keele · keelt"],
+  ["raamat","книга","A2","raamatu · raamatut"],["söök","еда","A2","söögi · sööki"],["vesi","вода","A2","vee · vett"],
+  ["ilm","погода","A2","ilma · ilma"],["sööma","есть, кушать","A2","süüa · söön"],["jooma","пить","A2","juua · joon"],
+  ["minema","идти","A2","minna · lähen"],["tulema","приходить","A2","tulla · tulen"],["tegema","делать","A2","teha · teen"],
+  ["nägema","видеть","A2","näha · näen"],["ostma","покупать","A2","osta · ostan"],["elama","жить","A2","elada · elan"],
+  ["rääkima","говорить","A2","rääkida · räägin"],["tahtma","хотеть","A2","tahta · tahan"],["ilus","красивый","A2","ilusa · ilusat"],
+  ["suur","большой","A2","suure · suurt"],["väike","маленький","A2","väikese · väikest"],["hea","хороший","A2","hea · head"],
+  ["kallis","дорогой","A2","kalli · kallist"],["odav","дешёвый","A2","odava · odavat"]]},
+ {id:"home", name:"Дом и быт", words:[
+  ["korter","квартира","B1","korteri · korterit"],["tuba","комната","B1","toa · tuba"],["köök","кухня","B1","köögi · kööki"],
+  ["aken","окно","B1","akna · akent"],["uks","дверь","B1","ukse · ust"],["üür","аренда, квартплата","B1","üüri · üüri"],
+  ["naaber","сосед","B1","naabri · naabrit"],["koristama","убирать","B1","koristada · koristan"],["pesema","мыть","B1","pesta · pesen"],
+  ["valmistama","готовить, изготавливать","B1","valmistada · valmistan"],["pood","магазин","B1","poe · poodi"],["arve","счёт (к оплате)","B1","arve · arvet"]]},
+ {id:"work", name:"Работа и учёба", words:[
+  ["ülemus","начальник","B1","ülemuse · ülemust"],["kolleeg","коллега","B1","kolleegi · kolleegi"],["palk","зарплата","B1","palga · palka"],
+  ["koosolek","совещание","B1","koosoleku · koosolekut"],["ettevõte","предприятие, компания","B1","ettevõtte · ettevõtet"],
+  ["kogemus","опыт","B1","kogemuse · kogemust"],["oskus","умение, навык","B1","oskuse · oskust"],["tähtaeg","срок, дедлайн","B1","tähtaja · tähtaega"],
+  ["õppima","учиться, изучать","B1","õppida · õpin"],["töötama","работать","B1","töötada · töötan"],
+  ["kandideerima","подавать заявку (на должность)","B2","kandideerida · kandideerin"],["lõpetama","заканчивать","B1","lõpetada · lõpetan"],
+  ["ülikool","университет","B1","ülikooli · ülikooli"],["eksam","экзамен","B1","eksami · eksamit"]]},
+ {id:"city", name:"Город и поездки", words:[
+  ["rong","поезд","B1","rongi · rongi"],["buss","автобус","B1","bussi · bussi"],["peatus","остановка","B1","peatuse · peatust"],
+  ["pilet","билет","B1","pileti · piletit"],["reis","поездка, путешествие","B1","reisi · reisi"],["jaam","вокзал, станция","B1","jaama · jaama"],
+  ["tänav","улица","B1","tänava · tänavat"],["sõitma","ехать","B1","sõita · sõidan"],["jõudma","добраться, успеть","B1","jõuda · jõuan"],
+  ["hilinema","опаздывать","B1","hilineda · hilinen"],["puhkus","отпуск, отдых","B1","puhkuse · puhkust"],["mets","лес","B1","metsa · metsa"],
+  ["meri","море","B1","mere · merd"]]},
+ {id:"health", name:"Здоровье", words:[
+  ["tervis","здоровье","B1","tervise · tervist"],["arst","врач","B1","arsti · arsti"],["haige","больной","B1","haige · haiget"],
+  ["valu","боль","B1","valu · valu"],["palavik","температура, жар","B1","palaviku · palavikku"],["rohi","лекарство","B1","rohu · rohtu"],
+  ["väsinud","уставший","B1","väsinu · väsinut"],["magama","спать","B1","magada · magan"],["tundma","чувствовать; знать (кого-то)","B1","tunda · tunnen"],
+  ["kõht","живот","B1","kõhu · kõhtu"],["pea","голова","B1","pea · pead"]]},
+ {id:"feel", name:"Чувства", words:[
+  ["rõõm","радость","B1","rõõmu · rõõmu"],["mure","забота, тревога","B1","mure · muret"],["hirm","страх","B1","hirmu · hirmu"],
+  ["õnnelik","счастливый","B1","õnneliku · õnnelikku"],["kurb","грустный","B1","kurva · kurba"],["vihane","сердитый, злой","B1","vihase · vihast"],
+  ["uudishimulik","любопытный","B2","uudishimuliku · uudishimulikku"],["kannatlik","терпеливый","B2","kannatliku · kannatlikku"],
+  ["usaldama","доверять","B2","usaldada · usaldan"],["kartma","бояться","B1","karta · kardan"],["meeldima","нравиться","B1","meeldida · meeldin"],
+  ["armastama","любить","B1","armastada · armastan"],["häbenema","стыдиться","B2","häbeneda · häbenen"],["muretsema","волноваться","B1","muretseda · muretsen"]]},
+ {id:"society", name:"Общество", words:[
+  ["valitsus","правительство","B2","valitsuse · valitsust"],["seadus","закон","B2","seaduse · seadust"],["valimised","выборы","B2","valimiste · valimisi"],
+  ["kodanik","гражданин","B2","kodaniku · kodanikku"],["ühiskond","общество","B2","ühiskonna · ühiskonda"],["majandus","экономика","B2","majanduse · majandust"],
+  ["hind","цена","B1","hinna · hinda"],["tõusma","расти, подниматься","B2","tõusta · tõusen"],["langema","падать, снижаться","B2","langeda · langen"],
+  ["otsustama","решать","B2","otsustada · otsustan"],["arutama","обсуждать","B2","arutada · arutan"],["mõjutama","влиять","B2","mõjutada · mõjutan"],
+  ["keskkond","окружающая среда","B2","keskkonna · keskkonda"],["uuring","исследование","B2","uuringu · uuringut"],["väide","утверждение","B2","väite · väidet"],
+  ["probleem","проблема","B1","probleemi · probleemi"],["lahendus","решение (задачи)","B2","lahenduse · lahendust"],["areng","развитие","B2","arengu · arengut"]]},
+ {id:"abstract", name:"Связки и абстракции", words:[
+  ["siiski","всё же, тем не менее","B2",""],["seetõttu","поэтому","B2",""],["kuigi","хотя","B2",""],["ometi","однако, всё-таки","B2",""],
+  ["vähemalt","по крайней мере","B2",""],["tegelikult","на самом деле","B2",""],["järelikult","следовательно","B2",""],["vastupidi","наоборот","B2",""],
+  ["eesmärk","цель","B2","eesmärgi · eesmärki"],["võimalus","возможность","B2","võimaluse · võimalust"],["põhjus","причина","B2","põhjuse · põhjust"],
+  ["tagajärg","последствие","B2","tagajärje · tagajärge"],["arvamus","мнение","B2","arvamuse · arvamust"],["vastutus","ответственность","B2","vastutuse · vastutust"],
+  ["nõustuma","соглашаться","B2","nõustuda · nõustun"],["väitma","утверждать","B2","väita · väidan"],["selgitama","объяснять","B2","selgitada · selgitan"],
+  ["vältima","избегать","B2","vältida · väldin"],["saavutama","достигать","B2","saavutada · saavutan"],["tähendama","означать","B2","tähendada · tähendan"],
+  ["oluline","важный","B2","olulise · olulist"],["vajalik","необходимый","B2","vajaliku · vajalikku"],["võimalik","возможный","B2","võimaliku · võimalikku"],
+  ["keeruline","сложный","B2","keerulise · keerulist"]]}
+];
+// ---------- Sentences: [et, ru, level, words used] ----------
+const SENTENCES = [
+ ["Minu pere elab väikeses majas.","Моя семья живёт в маленьком доме.","A2",["pere","elama","väike","maja"]],
+ ["Ma joon hommikuti teed.","По утрам я пью чай.","A2",["jooma","tee"]],
+ ["Täna on ilus ilm.","Сегодня хорошая погода.","A2",["ilus","ilm"]],
+ ["Ma tahan osta uue raamatu.","Я хочу купить новую книгу.","A2",["tahtma","ostma","raamat"]],
+ ["See linn on suur, aga mitte kallis.","Этот город большой, но не дорогой.","A2",["linn","suur","kallis"]],
+ ["Kas sa räägid eesti keelt?","Ты говоришь по-эстонски?","A2",["rääkima","keel"]],
+ ["Minu sõber tuleb homme meile külla.","Мой друг придёт к нам завтра в гости.","A2",["sõber","tulema"]],
+ ["Mul ei ole täna aega.","У меня сегодня нет времени.","A2",["aeg","päev"]],
+ ["Me sööme õhtul koos.","Вечером мы едим вместе.","A2",["sööma"]],
+ ["Ma lähen poodi vett ostma.","Я иду в магазин купить воды.","A2",["minema","pood","vesi","ostma"]],
+ ["Raha ei too õnne.","Деньги не приносят счастья.","A2",["raha"]],
+ ["Kas sa nägid eile seda filmi?","Ты видел вчера этот фильм?","A2",["nägema"]],
+ ["Mida sa nädalavahetusel teed?","Что ты делаешь на выходных?","A2",["tegema","nädal"]],
+ ["Odav ei tähenda alati halba.","Дешёвое не всегда значит плохое.","B2",["odav","tähendama"]],
+ ["Ma armastan oma peret.","Я люблю свою семью.","A2",["armastama","pere"]],
+ ["Meie korteris on kolm tuba ja suur köök.","В нашей квартире три комнаты и большая кухня.","B1",["korter","tuba","köök","suur"]],
+ ["Ma koristan oma tuba iga nädal.","Я убираю свою комнату каждую неделю.","B1",["koristama","tuba","nädal"]],
+ ["Üür on sel aastal jälle tõusnud.","Квартплата в этом году снова выросла.","B1",["üür","aasta","tõusma"]],
+ ["Palun ära ava akent, väljas on külm.","Пожалуйста, не открывай окно, на улице холодно.","B1",["aken"]],
+ ["Palun sulge uks.","Пожалуйста, закрой дверь.","A2",["uks"]],
+ ["Elektriarve oli sel kuul väga suur.","Счёт за электричество в этом месяце был очень большим.","B1",["arve","suur"]],
+ ["Ema valmistab köögis õhtusööki.","Мама готовит ужин на кухне.","B1",["valmistama","köök","söök"]],
+ ["Meie naaber on väga õnnelik, sest tal sündis poeg.","Наш сосед очень счастлив, потому что у него родился сын.","B1",["naaber","õnnelik"]],
+ ["Ta pesi nõud ja läks magama.","Он помыл посуду и пошёл спать.","B1",["pesema","minema","magama"]],
+ ["Mu ülemus tahab homme koosolekut pidada.","Мой начальник хочет завтра провести совещание.","B1",["ülemus","koosolek","tahtma"]],
+ ["Ta töötab suures ettevõttes juba viis aastat.","Он работает в большой компании уже пять лет.","B1",["töötama","ettevõte","suur","aasta"]],
+ ["Mul on selles valdkonnas palju kogemusi.","У меня много опыта в этой области.","B1",["kogemus"]],
+ ["Ma kandideerisin uuele töökohale.","Я подал заявку на новую должность.","B2",["kandideerima","töö"]],
+ ["Tähtaeg on reedel, seega pean kiirustama.","Срок в пятницу, поэтому мне нужно спешить.","B1",["tähtaeg"]],
+ ["Kolleeg aitas mul probleemi lahendada.","Коллега помог мне решить проблему.","B1",["kolleeg","probleem"]],
+ ["Ta õpib ülikoolis majandust.","Она изучает экономику в университете.","B1",["õppima","ülikool","majandus"]],
+ ["Kui ma eksami lõpetasin, olin väga väsinud.","Когда я закончил экзамен, я был очень уставшим.","B1",["eksam","lõpetama","väsinud"]],
+ ["Palk on hea, aga töö on keeruline.","Зарплата хорошая, но работа сложная.","B1",["palk","hea","töö","keeruline"]],
+ ["Rong jõuab jaama kell kaheksa.","Поезд прибывает на вокзал в восемь часов.","B1",["rong","jõudma","jaam"]],
+ ["Ma hilinesin, sest buss ei tulnud.","Я опоздал, потому что автобус не пришёл.","B1",["hilinema","buss","tulema"]],
+ ["Kus on lähim bussipeatus?","Где ближайшая автобусная остановка?","B1",["peatus","buss"]],
+ ["Me sõidame puhkuse ajal mere äärde.","Во время отпуска мы поедем на море.","B1",["sõitma","puhkus","meri","aeg"]],
+ ["Pilet Tartusse maksab kümme eurot.","Билет до Тарту стоит десять евро.","B1",["pilet"]],
+ ["Suvel meeldib mulle metsas jalutada.","Летом мне нравится гулять в лесу.","B1",["meeldima","mets"]],
+ ["Tänaval on palju inimesi.","На улице много людей.","A2",["tänav"]],
+ ["Reis Tallinnast Pärnusse kestis kaks tundi.","Поездка из Таллинна в Пярну длилась два часа.","B1",["reis"]],
+ ["Mul on palavik ja pea valutab.","У меня температура и болит голова.","B1",["palavik","pea","valu"]],
+ ["Arst ütles, et pean seda rohtu võtma kolm korda päevas.","Врач сказал, что мне нужно принимать это лекарство три раза в день.","B1",["arst","rohi","päev"]],
+ ["Ta ei tunne end hästi, sest ta on haige.","Он плохо себя чувствует, потому что болен.","B1",["tundma","haige"]],
+ ["Hea uni on tervise jaoks väga oluline.","Хороший сон очень важен для здоровья.","B1",["hea","tervis","oluline"]],
+ ["Mu kõht valutab.","У меня болит живот.","B1",["kõht","valu"]],
+ ["Ma kardan, et me ei jõua õigeks ajaks.","Боюсь, что мы не успеем вовремя.","B1",["kartma","jõudma","aeg"]],
+ ["Ära muretse, kõik läheb hästi.","Не волнуйся, всё будет хорошо.","B1",["muretsema","minema"]],
+ ["Ma magasin halvasti, sest mul oli palju muret.","Я плохо спал, потому что у меня было много забот.","B1",["magama","mure"]],
+ ["Ta oli vihane, sest keegi ei usaldanud teda.","Он злился, потому что никто ему не доверял.","B2",["vihane","usaldama"]],
+ ["Lapsed on sageli väga uudishimulikud.","Дети часто очень любопытны.","B2",["uudishimulik"]],
+ ["Õpetaja peab olema kannatlik.","Учитель должен быть терпеливым.","B2",["kannatlik"]],
+ ["Tema rõõm oli suurem kui hirm.","Его радость была сильнее страха.","B1",["rõõm","hirm","suur"]],
+ ["Ta oli kurb, kui sõber ära kolis.","Ему было грустно, когда друг переехал.","B1",["kurb","sõber"]],
+ ["Ta häbenes oma viga.","Он стыдился своей ошибки.","B2",["häbenema"]],
+ ["Valitsus otsustas uue seaduse vastu võtta.","Правительство решило принять новый закон.","B2",["valitsus","otsustama","seadus"]],
+ ["Hinnad on viimastel kuudel kiiresti tõusnud.","Цены в последние месяцы быстро выросли.","B2",["hind","tõusma"]],
+ ["Toidu hind langes kümme protsenti.","Цена на продукты снизилась на десять процентов.","B2",["hind","langema"]],
+ ["Iga kodanik peaks valimistel osalema.","Каждый гражданин должен участвовать в выборах.","B2",["kodanik","valimised"]],
+ ["Uuring näitas, et keskkonnaprobleemid mõjutavad kogu ühiskonda.","Исследование показало, что экологические проблемы влияют на всё общество.","B2",["uuring","keskkond","probleem","mõjutama","ühiskond"]],
+ ["Me arutasime koosolekul mitut võimalikku lahendust.","На совещании мы обсудили несколько возможных решений.","B2",["arutama","koosolek","võimalik","lahendus"]],
+ ["Majanduse areng sõltub paljudest teguritest.","Развитие экономики зависит от многих факторов.","B2",["majandus","areng"]],
+ ["Kuigi ilm oli halb, läksime siiski metsa.","Хотя погода была плохой, мы всё же пошли в лес.","B2",["kuigi","ilm","siiski","mets","minema"]],
+ ["Ma ei nõustu selle väitega. Vastupidi, minu arvates on see vale.","Я не согласен с этим утверждением. Наоборот, по-моему, оно неверно.","B2",["nõustuma","väide","vastupidi"]],
+ ["Selle otsuse tagajärjed on tegelikult väga keerulised.","Последствия этого решения на самом деле очень сложные.","B2",["tagajärg","tegelikult","keeruline"]],
+ ["Meie eesmärk on vältida samu vigu.","Наша цель — избежать тех же ошибок.","B2",["eesmärk","vältima"]],
+ ["Ta selgitas, mida see sõna tähendab.","Она объяснила, что означает это слово.","B2",["selgitama","tähendama"]],
+ ["Juhil on suur vastutus.","У руководителя большая ответственность.","B2",["vastutus","suur"]],
+ ["Mis on selle probleemi peamine põhjus?","Какова главная причина этой проблемы?","B2",["põhjus","probleem"]],
+ ["Vähemalt saavutasime oma eesmärgi.","По крайней мере, мы достигли своей цели.","B2",["vähemalt","saavutama","eesmärk"]],
+ ["Ta ei õppinud, järelikult ei sooritanud ta eksamit.","Он не учился, следовательно, не сдал экзамен.","B2",["õppima","järelikult","eksam"]],
+ ["Ma austan sinu arvamust, kuid olen ometi teisel arvamusel.","Я уважаю твоё мнение, но всё же придерживаюсь другого.","B2",["arvamus","ometi"]],
+ ["Keeleoskus annab tööturul rohkem võimalusi.","Знание языка даёт больше возможностей на рынке труда.","B2",["oskus","keel","võimalus","töö"]],
+ ["Seetõttu on vajalik leida uus lahendus.","Поэтому необходимо найти новое решение.","B2",["seetõttu","vajalik","lahendus"]],
+ ["Ta väidab, et ei teadnud midagi.","Он утверждает, что ничего не знал.","B2",["väitma"]]
+];
+
+// ---------- State ----------
+const INTERVALS = [0, 1, 3, 7, 16, 35]; // days per box (0 = new)
+const BOX_NAMES = ["новые","учу","1 день","3 дня","неделя+"];
+let S = {progress:{}, custom:[], log:{}, dir:"et", sdir:"ru2et", topic:"all", tab:"cards", apiKey:"", model:"claude-opus-5-5", dictCache:{}};
+const DAY = 86400000;
+const today = () => new Date().toISOString().slice(0,10);
+try{ const raw = localStorage.getItem("rukkilill"); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+
+function persist(){
+  try{ localStorage.setItem("rukkilill", JSON.stringify(S)); }catch(e){}
+}
+try{ navigator.storage?.persist?.(); }catch(e){}
+
+function allWords(){
+  const out = [];
+  for(const t of TOPICS) for(const w of t.words) out.push({et:w[0],ru:w[1],lvl:w[2],forms:w[3],topic:t.id});
+  for(const c of S.custom) out.push(Object.assign({topic:"mine"}, c));
+  return out;
+}
+const byEt = () => Object.fromEntries(allWords().map(w=>[w.et,w]));
+function exampleFor(et){ return SENTENCES.find(s=>s[3].includes(et)); }
+function boxOf(et){ return S.progress[et]?.box ?? 0; }
+function isDue(et){ const p = S.progress[et]; return !p || p.due <= Date.now(); }
+function learnedCount(){ return Object.values(S.progress).filter(p=>p.box>=2).length; }
+function seenWords(){ return new Set(Object.keys(S.progress)); }
+
+// ---------- Helpers ----------
+const $ = (s,el=document)=>el.querySelector(s);
+const h = (html)=>{ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstElementChild; };
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,2200); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+const SPEAK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+let etVoice = null;
+function pickVoice(){ try{ etVoice = speechSynthesis.getVoices().find(v=>/^et/i.test(v.lang)) || null; }catch(e){} }
+try{ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }catch(e){}
+function speak(text){
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang="et-EE"; if(etVoice) u.voice=etVoice; u.rate=.9; speechSynthesis.speak(u);
+    if(!etVoice) toast("Эстонский голос не найден на устройстве — звучание может быть неточным"); }
+  catch(e){ toast("Озвучка недоступна на этом устройстве"); }
+}
+function normalize(s){ return s.toLowerCase().replace(/[.,!?;:«»"'—–-]/g," ").replace(/ё/g,"е").replace(/\s+/g," ").trim(); }
+
+function updateStat(){
+  const n = learnedCount(), total = allWords().length;
+  $("#stat").innerHTML = `Выучено <b>${n}</b> из ${total}<br>Сегодня <b>${S.log[today()]||0}</b> повтор.`;
+}
+
+// ---------- Claude (dictionary + grading) ----------
+const MODELS = [
+  {id:"claude-opus-5-5", name:"Claude Opus 5.5", note:"точнее объясняет ошибки"},
+  {id:"claude-haiku-5-5", name:"Claude Haiku 5.5", note:"быстрее и намного дешевле"}
+];
+let sample = null;
+function setupClaude(){
+  if(!S.apiKey){ sample = null; return; }
+  const client = new Anthropic({apiKey:S.apiKey, dangerouslyAllowBrowser:true, maxRetries:1});
+  sample = {
+    // One structured-output request; returns the parsed JSON object.
+    async json(prompt, {schema, signal, maxTokens=4000} = {}){
+      const params = {
+        model:S.model, max_tokens:maxTokens,
+        output_config:{effort:"low", format:{type:"json_schema", schema}},
+        messages:[{role:"user", content:prompt}]
+      };
+      const res = S.model==="claude-opus-5-5"
+        ? await client.beta.messages.create({...params, betas:["server-side-fallback-2026-07-01"], fallbacks:"default"}, {signal})
+        : await client.messages.create(params, {signal});
+      if(res.stop_reason==="refusal") throw {code:"refused"};
+      if(res.stop_reason==="max_tokens") throw {code:"truncated"};
+      const text = res.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+      return JSON.parse(text);
+    }
+  };
+}
+setupClaude();
+const obj = (properties) => ({type:"object", properties, required:Object.keys(properties), additionalProperties:false});
+const STR = {type:"string"};
+const SCHEMA_GRADE = obj({verdict:{type:"string", enum:["correct","almost","wrong"]}, score:{type:"integer"}, feedback:STR, corrected:STR});
+const SCHEMA_GEN = obj({et:STR, ru:STR, words:{type:"array", items:STR}});
+const SCHEMA_DICT = obj({et:STR, ru:STR, pos:STR, level:STR, forms:{type:"array", items:obj({label:STR, value:STR})}, examples:{type:"array", items:obj({et:STR, ru:STR})}, note:STR});
+function sampleErr(e){
+  if(e instanceof Anthropic.APIUserAbortError || e?.name==="AbortError") return "";
+  if(e instanceof Anthropic.AuthenticationError) return "Ключ API не подошёл. Проверьте его в настройках.";
+  if(e instanceof Anthropic.PermissionDeniedError) return "У этого ключа нет доступа к выбранной модели. Выберите другую в настройках.";
+  if(e instanceof Anthropic.RateLimitError) return "Слишком много запросов. Попробуйте через минуту.";
+  if(e instanceof Anthropic.BadRequestError && /credit|balance|billing/i.test(e.message)) return "На счёте API закончились деньги. Пополните баланс в консоли Anthropic.";
+  if(e instanceof Anthropic.APIConnectionError) return "Нет интернета. Карточки и встроенный словарь работают и без него.";
+  if(e instanceof Anthropic.InternalServerError) return "Сервис Claude сейчас перегружен. Попробуйте ещё раз чуть позже.";
+  if(e?.code==="refused") return "Claude не стал отвечать на этот запрос. Попробуйте переформулировать.";
+  if(e?.code==="truncated" || e instanceof SyntaxError) return "Ответ пришёл не полностью. Попробуйте ещё раз.";
+  return "Не получилось получить ответ. Попробуйте ещё раз.";
+}
+function connectHint(text){
+  const p = h(`<div class="panel"><div>${esc(text)}</div><button class="btn primary">Подключить Claude</button></div>`);
+  $("button",p).onclick = ()=>{ S.tab="settings"; persist(); render(); window.scrollTo(0,0); };
+  return p;
+}
+
+// ---------- Tabs ----------
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; persist(); render(); window.scrollTo(0,0); });
+function render(){
+  document.querySelectorAll("nav.tabs button").forEach(b=>{ if(b.dataset.tab===S.tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  for(const id of ["cards","sent","dict","settings"]) $("#v-"+id).hidden = S.tab!==id;
+  updateStat();
+  if(S.tab==="cards") renderCards();
+  if(S.tab==="sent") renderSent();
+  if(S.tab==="dict") renderDict();
+  if(S.tab==="settings") renderSettings();
+}
+
+// ---------- Cards ----------
+let queue = [], cur = null, flipped = false;
+function deckWords(){
+  const all = allWords();
+  return S.topic==="all" ? all : all.filter(w=>w.topic===S.topic);
+}
+function buildQueue(){
+  const due = deckWords().filter(w=>isDue(w.et));
+  const reviews = shuffle(due.filter(w=>S.progress[w.et]));
+  const fresh = due.filter(w=>!S.progress[w.et]).slice(0, 10);
+  queue = [...reviews, ...fresh].slice(0, 20);
+}
+function renderCards(){
+  const v = $("#v-cards"); v.innerHTML = "";
+  const topics = [{id:"all",name:"Все"}, ...TOPICS, ...(S.custom.length?[{id:"mine",name:"Мои слова"}]:[])];
+  const all = allWords();
+  v.append(h(`<div><h2>Карточки</h2><p class="sub">Слова уровней A2–B2. Если помните — карточка вернётся позже, если нет — скоро снова.</p></div>`));
+  const chips = h(`<div class="chips" role="group" aria-label="Тема"></div>`);
+  for(const t of topics){
+    const ws = t.id==="all"?all:all.filter(w=>w.topic===t.id);
+    const due = ws.filter(w=>isDue(w.et)).length;
+    const c = h(`<button class="chip" aria-pressed="${S.topic===t.id}">${esc(t.name)} <small>${due}</small></button>`);
+    c.onclick=()=>{ S.topic=t.id; persist(); queue=[]; cur=null; renderCards(); };
+    chips.append(c);
+  }
+  v.append(chips);
+  const seg = h(`<div class="seg" role="group" aria-label="Сторона карточки"><button aria-pressed="${S.dir==="et"}">ET → RU</button><button aria-pressed="${S.dir==="ru"}">RU → ET</button></div>`);
+  seg.children[0].onclick=()=>{S.dir="et";persist();renderCards();};
+  seg.children[1].onclick=()=>{S.dir="ru";persist();renderCards();};
+  v.append(seg);
+
+  if(!cur){ if(!queue.length) buildQueue(); cur = queue.shift() || null; flipped=false; }
+  if(!cur){
+    const n = deckWords().length;
+    const next = deckWords().map(w=>S.progress[w.et]?.due).filter(Boolean).sort((a,b)=>a-b)[0];
+    const when = next ? new Date(next).toLocaleDateString("ru-RU",{day:"numeric",month:"long"}) : "";
+    const d = h(`<div class="done"><div class="big">Hästi tehtud!</div><div>В этой теме на сегодня всё (${n} слов).${when?` Следующее повторение — ${esc(when)}.`:""}</div><div class="sub">Переходите к предложениям, чтобы закрепить слова.</div></div>`);
+    const b = h(`<button class="btn primary">Перейти к предложениям</button>`); b.onclick=()=>{S.tab="sent";render();};
+    d.append(b); v.append(d);
+  } else {
+    const w = cur, ex = exampleFor(w.et);
+    const front = S.dir==="et" ? `<div class="word" lang="et">${esc(w.et)}</div>` : `<div class="word">${esc(w.ru)}</div>`;
+    const back = S.dir==="et"
+      ? `<div class="trans">${esc(w.ru)}</div><div class="word" lang="et" style="font-size:20px;margin:0;color:var(--muted)">${esc(w.et)}</div>`
+      : `<div class="trans" lang="et">${esc(w.et)}</div><div class="forms">${esc(w.ru)}</div>`;
+    const forms = w.forms ? `<div class="forms">Формы: <b lang="et">${esc(w.forms)}</b></div>` : "";
+    const exHtml = ex ? `<div class="ex"><div lang="et">${esc(ex[0])}</div><div class="ru">${esc(ex[1])}</div></div>` : (w.example ? `<div class="ex"><div lang="et">${esc(w.example)}</div></div>`:"");
+    const meta = `<div class="meta"><span class="lvl">${esc(w.lvl||"B2")}</span><span class="box">${BOX_NAMES[Math.min(boxOf(w.et),4)]} · осталось ${queue.length+1}</span></div>`;
+    const stage = h(`<div class="card-stage"><button class="fcard ${flipped?"flipped":""}" aria-label="Перевернуть карточку">
+      <div class="face front">${meta}${front}<div class="hint">Нажмите, чтобы перевернуть</div></div>
+      <div class="face back">${meta}${back}${forms}${exHtml}</div></button></div>`);
+    const fc = $(".fcard", stage);
+    fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle("flipped", flipped); acts.hidden=!flipped; };
+    v.append(stage);
+    const tools = h(`<div class="spread"><button class="btn sm ghost">${SPEAK_ICON} Произнести</button><span class="note">Формы: родительный · частичный / da-инф. · я-форма</span></div>`);
+    tools.children[0].onclick=()=>speak(w.et);
+    v.append(tools);
+    const acts = h(`<div class="actions"><button class="btn bad">Не помню</button><button class="btn good">Помню</button></div>`);
+    acts.hidden = !flipped;
+    acts.children[0].onclick=()=>grade(false);
+    acts.children[1].onclick=()=>grade(true);
+    v.append(acts);
+  }
+  // ladder
+  const counts=[0,0,0,0,0]; for(const w of all) counts[Math.min(boxOf(w.et),4)]++;
+  const lad = h(`<div><div class="label" style="margin-bottom:8px">Прогресс по всем словам</div><div class="ladder">${counts.map((c,i)=>`<div><b>${c}</b><span>${BOX_NAMES[i]}</span></div>`).join("")}</div></div>`);
+  v.append(lad);
+}
+function grade(ok){
+  const p = S.progress[cur.et] || {box:0};
+  const box = ok ? Math.min((p.box||0)+1, 5) : 1;
+  S.progress[cur.et] = {box, due: Date.now() + (ok ? INTERVALS[box]*DAY : 60*1000), t: Date.now()};
+  S.log[today()] = (S.log[today()]||0)+1;
+  if(!ok) queue.splice(Math.min(3,queue.length),0,cur); // see it again soon
+  persist(); cur=null; flipped=false; renderCards(); updateStat();
+}
+
+// ---------- Sentences ----------
+let sentCur = null, sentAnswer = "", sentResult = null, sentBusy = false, sentCtl = null;
+function pickSentence(){
+  const seen = seenWords();
+  let pool = SENTENCES.filter(s=>s[3].some(w=>seen.has(w)));
+  if(pool.length < 3) pool = SENTENCES.filter(s=>s[2]!=="B2");
+  // prefer sentences where most words are already studied
+  pool = pool.map(s=>({s, score:s[3].filter(w=>seen.has(w)).length/s[3].length + Math.random()*.6}))
+    .sort((a,b)=>b.score-a.score).slice(0,12).map(x=>x.s);
+  let s = pool[Math.floor(Math.random()*pool.length)];
+  if(sentCur && s===sentCur.raw && pool.length>1) s = pool.find(x=>x!==s);
+  sentCur = {et:s[0], ru:s[1], lvl:s[2], words:s[3], raw:s};
+  sentAnswer = ""; sentResult = null;
+}
+function renderSent(){
+  const v = $("#v-sent"); v.innerHTML = "";
+  if(!sentCur) pickSentence();
+  const seen = seenWords();
+  v.append(h(`<div><h2>Переведите предложение</h2><p class="sub">${seen.size ? "Предложения собраны из слов, которые вы уже открывали в карточках." : "Пройдите несколько карточек — и предложения начнут подбираться под ваши слова."}</p></div>`));
+  const seg = h(`<div class="seg" role="group" aria-label="Направление"><button aria-pressed="${S.sdir==="ru2et"}">RU → ET</button><button aria-pressed="${S.sdir==="et2ru"}">ET → RU</button></div>`);
+  seg.children[0].onclick=()=>{S.sdir="ru2et";sentResult=null;sentAnswer="";persist();renderSent();};
+  seg.children[1].onclick=()=>{S.sdir="et2ru";sentResult=null;sentAnswer="";persist();renderSent();};
+  v.append(seg);
+
+  const toEt = S.sdir==="ru2et";
+  const src = toEt ? sentCur.ru : sentCur.et;
+  const wordsMap = byEt();
+  const panel = h(`<div class="panel">
+    <div class="spread"><span class="lvl">${esc(sentCur.lvl)}${sentCur.gen?" · от Claude":""}</span>${toEt?"":`<button class="icon-btn" aria-label="Произнести">${SPEAK_ICON}</button>`}</div>
+    <div class="prompt" ${toEt?"":'lang="et"'}>${esc(src)}</div>
+    <div class="tags">${sentCur.words.map(w=>`<span class="tag" lang="et">${esc(w)}${wordsMap[w]?" — "+esc(wordsMap[w].ru):""}</span>`).join("")}</div>
+    <label class="label" for="answer">${toEt?"Ваш перевод на эстонский":"Ваш перевод на русский"}</label>
+    <textarea id="answer" ${toEt?'lang="et" autocapitalize="sentences"':""} placeholder="${toEt?"Kirjuta siia…":"Напишите здесь…"}"></textarea>
+    <div class="row" id="sent-act"></div>
+    <div id="sent-res"></div>
+  </div>`);
+  if(!toEt) $(".icon-btn",panel).onclick=()=>speak(sentCur.et);
+  const ta = $("textarea",panel); ta.value = sentAnswer; ta.oninput=()=>{sentAnswer=ta.value;};
+  const act = $("#sent-act",panel);
+  const check = h(`<button class="btn primary" style="flex:1">Проверить</button>`);
+  check.disabled = sentBusy;
+  check.onclick = ()=>checkSentence(panel);
+  const show = h(`<button class="btn ghost">Показать ответ</button>`);
+  show.onclick = ()=>{ sentResult = {verdict:"shown"}; drawSentResult(panel); };
+  act.append(check, show);
+  v.append(panel);
+  drawSentResult(panel);
+
+  const nav = h(`<div class="actions"><button class="btn">Следующее</button><button class="btn">Новое от Claude</button></div>`);
+  nav.children[0].onclick=()=>{ sentCtl?.abort(); sentBusy=false; pickSentence(); renderSent(); };
+  nav.children[1].onclick=()=>generateSentence(nav.children[1]);
+  nav.children[1].hidden = !sample;
+  if(!sample) nav.style.gridTemplateColumns="1fr";
+  v.append(nav);
+  if(sample) v.append(h(`<p class="note">«Новое от Claude» составит свежее предложение уровня B1–B2 из ваших слов. Проверка и новые предложения оплачиваются с вашего ключа API, обычно это доли цента за запрос.</p>`));
+  else v.append(connectHint("Сейчас перевод сравнивается с эталоном буква в букву. С Claude любой правильный вариант будет засчитан, а ошибки объяснены."));
+}
+function drawSentResult(panel){
+  const box = $("#sent-res", panel); box.innerHTML="";
+  const r = sentResult; if(!r) return;
+  const toEt = S.sdir==="ru2et";
+  const ref = toEt ? sentCur.et : sentCur.ru;
+  if(r.busy){ box.append(h(`<div class="thinking"><span class="dot"></span>Claude проверяет перевод…</div>`)); return; }
+  if(r.verdict==="shown"){
+    box.append(h(`<div class="verdict almost"><div class="head">Правильный ответ</div><div class="ref" ${toEt?'lang="et"':""}>${esc(ref)}</div></div>`)); return;
+  }
+  const titles = {correct:"Верно!", almost:"Почти", wrong:"Есть ошибки"};
+  const el = h(`<div class="verdict ${r.verdict}"><div class="head">${titles[r.verdict]||"Результат"}${r.score!=null?` · ${r.score}/100`:""}</div></div>`);
+  if(r.feedback) el.append(h(`<div>${esc(r.feedback)}</div>`));
+  if(r.corrected && normalize(r.corrected)!==normalize(sentAnswer)) el.append(h(`<div><span class="label">Исправленный вариант</span><div class="ref" ${toEt?'lang="et"':""}>${esc(r.corrected)}</div></div>`));
+  el.append(h(`<div><span class="label">Эталон</span><div ${toEt?'lang="et"':""}>${esc(ref)}</div></div>`));
+  if(r.offline) el.append(h(`<div class="note">Проверка без Claude: сравнение с эталоном. Другой правильный вариант тоже может быть верным.</div>`));
+  box.append(el);
+}
+async function checkSentence(panel){
+  const ans = sentAnswer.trim();
+  if(!ans){ toast("Сначала напишите перевод"); return; }
+  const toEt = S.sdir==="ru2et";
+  const ref = toEt ? sentCur.et : sentCur.ru;
+  const src = toEt ? sentCur.ru : sentCur.et;
+  if(!sample){
+    const a = normalize(ans), b = normalize(ref);
+    const aw = new Set(a.split(" ")), bw = b.split(" ");
+    const hit = bw.filter(w=>aw.has(w)).length / bw.length;
+    sentResult = {offline:true, score:Math.round(hit*100), verdict: a===b?"correct": hit>=.7?"almost":"wrong"};
+    drawSentResult(panel); return;
+  }
+  sentBusy = true; sentResult = {busy:true}; drawSentResult(panel);
+  sentCtl = new AbortController();
+  const prompt = `Ты преподаватель эстонского языка, ученик-русскоязычный готовится к уровню B2.
+Задание: перевести с ${toEt?"русского на эстонский":"эстонского на русский"}.
+Исходное предложение: "${src}"
+Эталонный перевод: "${ref}"
+Ответ ученика: "${ans}"
+Оцени ответ ученика. Принимай любой грамматически правильный перевод с тем же смыслом, даже если он отличается от эталона. Мелкие опечатки и пропущенные знаки над буквами (õ ä ö ü) — "almost". Объясни ошибки кратко по-русски (падежи, спряжение, порядок слов, лексика), максимум 3 предложения.
+Верни verdict (correct/almost/wrong), score от 0 до 100, feedback и corrected — исправленный вариант ответа ученика на ${toEt?"эстонском":"русском"} (если ошибок нет, повтори ответ ученика).`;
+  try{
+    const r = await sample.json(prompt, {schema:SCHEMA_GRADE, signal:sentCtl.signal});
+    sentResult = {verdict:["correct","almost","wrong"].includes(r?.verdict)?r.verdict:"almost", score:Number.isFinite(+r?.score)?Math.round(+r.score):null, feedback:String(r?.feedback||""), corrected:String(r?.corrected||"")};
+  }catch(e){
+    const m = sampleErr(e);
+    sentResult = null; sentBusy = false;
+    if(m) toast(m);
+  }
+  sentBusy = false; drawSentResult(panel);
+}
+async function generateSentence(btn){
+  if(!sample) return;
+  const seen = [...seenWords()];
+  const pool = seen.length>=3 ? seen : allWords().map(w=>w.et);
+  const picks = shuffle(pool.slice()).slice(0,3);
+  btn.disabled = true; btn.textContent = "Claude пишет…";
+  try{
+    const r = await sample.json(`Составь одно естественное предложение на эстонском языке уровня B1–B2 (8–16 слов), используя слова: ${picks.join(", ")} (в любой нужной грамматической форме; можно использовать 2 из 3, если иначе выходит неестественно). Предложение должно быть грамматически безупречным, на повседневную или общественную тему. Дай точный перевод на русский.
+В поле words перечисли использованные слова из списка в начальной форме.`, {schema:SCHEMA_GEN});
+    if(r?.et && r?.ru){
+      sentCur = {et:String(r.et), ru:String(r.ru), lvl:"B2", words:Array.isArray(r.words)&&r.words.length?r.words.map(String):picks, gen:true};
+      sentAnswer=""; sentResult=null;
+    }
+  }catch(e){ const m=sampleErr(e); if(m) toast(m); }
+  renderSent();
+}
+
+// ---------- Dictionary ----------
+let dq = "", dEntry = null, dBusy = false, dCtl = null;
+function renderDict(){
+  const v = $("#v-dict"); v.innerHTML = "";
+  v.append(h(`<div><h2>Словарь</h2><p class="sub">Эстонский ↔ русский. Ищите в словаре приложения${sample?" или спросите Claude о любом слове: перевод, формы и примеры":""}. Слова, которые вы уже спрашивали, доступны и без интернета.</p></div>`));
+  const form = h(`<form class="search" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="dict-q" type="search" placeholder="Например: kohustus или обязанность" autocomplete="off" enterkeyhint="search"></form>`);
+  const inp = $("input",form); inp.value = dq;
+  const results = h(`<div style="display:flex;flex-direction:column;gap:12px"></div>`);
+  inp.oninput = ()=>{ dq = inp.value; drawLocal(results); };
+  form.onsubmit = (e)=>{ e.preventDefault(); inp.blur(); if(dq.trim()) askClaude(dq.trim(), results); };
+  v.append(form, results);
+  if(!sample) v.append(connectHint("Чтобы переводить любые слова, а не только встроенные, подключите Claude своим ключом API."));
+  drawLocal(results);
+}
+function drawLocal(results){
+  results.innerHTML = "";
+  const q = normalize(dq);
+  if(dEntry || dBusy) results.append(entryView());
+  if(!q){
+    if(!dEntry && !dBusy) results.append(h(`<p class="note">Наберите слово на любом из двух языков. ${sample?"Нажмите «Найти» на клавиатуре, чтобы получить подробную статью от Claude.":""}</p>`));
+    return;
+  }
+  const cached = Object.values(S.dictCache).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).map(w=>({et:w.et, ru:w.ru, forms:(w.forms||[]).slice(0,2).map(f=>f.value).join(" · ")}));
+  const seenEt = new Set();
+  const hits = [...allWords(), ...cached].filter(w=>!seenEt.has(w.et) && seenEt.add(w.et)).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).slice(0,30);
+  if(sample){
+    const ask = h(`<button class="btn primary">Спросить Claude: «${esc(dq.trim())}»</button>`);
+    ask.onclick = ()=>askClaude(dq.trim(), results);
+    results.append(ask);
+  }
+  if(hits.length){
+    const list = h(`<div class="list"></div>`);
+    for(const w of hits){
+      const it = h(`<div class="item"><div><div class="et" lang="et">${esc(w.et)}</div><div class="ru">${esc(w.ru)}${w.forms?` · <span lang="et">${esc(w.forms)}</span>`:""}</div></div><button class="icon-btn" aria-label="Произнести ${esc(w.et)}">${SPEAK_ICON}</button></div>`);
+      $("button",it).onclick=()=>speak(w.et);
+      list.append(it);
+    }
+    results.append(h(`<div class="label">В словаре приложения</div>`), list);
+  } else if(!sample){
+    results.append(h(`<p class="note">В словаре приложения такого слова нет.</p>`));
+  }
+}
+function entryView(){
+  if(dBusy) return h(`<div class="panel"><div class="thinking"><span class="dot"></span>Claude ищет слово…</div></div>`);
+  const e = dEntry;
+  const p = h(`<div class="panel entry">
+    <div class="spread"><div style="min-width:0"><h3 lang="et">${esc(e.et)}</h3><div class="pos">${esc(e.pos||"")}${e.level?` · ${esc(e.level)}`:""}</div></div><button class="icon-btn" aria-label="Произнести">${SPEAK_ICON}</button></div>
+    <div class="trans">${esc(e.ru)}</div>
+    ${e.forms?.length?`<dl class="formsgrid">${e.forms.map(f=>`<dt>${esc(f.label)}</dt><dd lang="et">${esc(f.value)}</dd>`).join("")}</dl>`:""}
+    ${(e.examples||[]).map(x=>`<div class="ex"><div lang="et">${esc(x.et)}</div><div class="ru">${esc(x.ru)}</div></div>`).join("")}
+    ${e.note?`<div class="note">${esc(e.note)}</div>`:""}
+    <div class="row"></div></div>`);
+  $(".icon-btn",p).onclick=()=>speak(e.et);
+  const exists = allWords().some(w=>w.et===e.et);
+  const add = h(`<button class="btn sm ${exists?"ghost":"primary"}">${exists?"Уже в карточках":"Добавить в карточки"}</button>`);
+  add.disabled = exists;
+  add.onclick = ()=>{
+    S.custom.push({et:e.et, ru:e.ru, lvl:e.level||"B2", forms:(e.forms||[]).slice(0,2).map(f=>f.value).join(" · "), example:e.examples?.[0]?.et||""});
+    persist(); toast("Добавлено в «Мои слова»"); updateStat(); drawLocal(p.parentElement);
+  };
+  $(".row",p).append(add);
+  return p;
+}
+async function askClaude(q, results){
+  const key = normalize(q);
+  if(S.dictCache[key]){ dEntry = S.dictCache[key]; dBusy = false; drawLocal(results); return; }
+  if(!sample){ toast("Подключите Claude в настройках"); return; }
+  dCtl?.abort(); dCtl = new AbortController();
+  dBusy = true; dEntry = null; drawLocal(results);
+  try{
+    const r = await sample.json(`Ты эстонско-русский словарь для русскоязычного ученика (цель B2). Запрос: "${q}".
+Определи язык запроса (эстонский или русский). Дай основное эстонское слово в начальной форме и русский перевод (1–4 значения через запятую). Если запрос — фраза или форма слова, дай начальную форму и объясни форму в note.
+Для существительных и прилагательных forms: ["родительный (omastav)", "частичный (osastav)", "мн. ч. частичный"]. Для глаголов: ["ma-инфинитив","da-инфинитив","наст. вр. (ma)","прош. вр. (ma)","страдат. (tud)"]. Для неизменяемых слов forms: [].
+Дай 2 коротких естественных примера уровня B1–B2.
+Поля: et — слово, ru — перевод, pos — часть речи по-русски, level — A1/A2/B1/B2/C1, forms, examples, note — короткое пояснение или пустая строка.`,
+      {schema:SCHEMA_DICT, signal:dCtl.signal});
+    if(r?.et){ dEntry = {et:String(r.et), ru:String(r.ru||""), pos:r.pos, level:r.level, forms:Array.isArray(r.forms)?r.forms.filter(f=>f&&f.value):[], examples:Array.isArray(r.examples)?r.examples.filter(x=>x&&x.et):[], note:r.note};
+      S.dictCache[key] = dEntry; persist(); }
+  }catch(e){ const m=sampleErr(e); if(m) toast(m); }
+  dBusy = false; drawLocal(results);
+}
+
+// ---------- Settings ----------
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); installEvt = e; if(S.tab==="settings") renderSettings(); });
+const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+let keyStatus = "";
+function renderSettings(){
+  const v = $("#v-settings"); v.innerHTML = "";
+  v.append(h(`<div><h2>Настройки</h2><p class="sub">Прогресс и ключ хранятся только на этом телефоне.</p></div>`));
+
+  const claude = h(`<div class="panel">
+    <div class="label">Claude: словарь и проверка перевода</div>
+    <div class="field"><label for="api-key">Ключ API Anthropic</label>
+      <input id="api-key" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field"><label for="model">Модель</label>
+      <select id="model">${MODELS.map(m=>`<option value="${m.id}" ${S.model===m.id?"selected":""}>${m.name}</option>`).join("")}</select>
+      <div class="note">${MODELS.map(m=>`${m.name.replace("Claude ","")} — ${m.note}`).join(". ")}.</div>
+    </div>
+    <div class="row"><button class="btn primary sm" id="save-key">Сохранить и проверить</button><button class="btn ghost sm" id="show-key">Показать ключ</button>${S.apiKey?'<button class="btn ghost sm" id="del-key">Удалить ключ</button>':""}</div>
+    <div id="key-status">${keyStatus}</div>
+    <ol class="steps note">
+      <li>Откройте <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> и войдите.</li>
+      <li>Пополните баланс в разделе Billing (хватит нескольких долларов на месяцы занятий).</li>
+      <li>Создайте ключ в API Keys, скопируйте и вставьте сюда.</li>
+    </ol>
+  </div>`);
+  const keyIn = $("#api-key",claude); keyIn.value = S.apiKey;
+  $("#model",claude).onchange = e=>{ S.model = e.target.value; persist(); setupClaude(); };
+  $("#show-key",claude).onclick = e=>{ const show = keyIn.type==="password"; keyIn.type = show?"text":"password"; e.target.textContent = show?"Скрыть ключ":"Показать ключ"; };
+  const del = $("#del-key",claude);
+  if(del) del.onclick = ()=>{ S.apiKey=""; persist(); setupClaude(); keyStatus=""; renderSettings(); toast("Ключ удалён"); };
+  $("#save-key",claude).onclick = async (e)=>{
+    S.apiKey = keyIn.value.trim(); persist(); setupClaude();
+    if(!S.apiKey){ keyStatus=""; renderSettings(); return; }
+    e.target.disabled = true; $("#key-status",claude).innerHTML = `<div class="thinking"><span class="dot"></span>Проверяю ключ…</div>`;
+    try{
+      const r = await sample.json('Переведи слово "tere" на русский. Поле ru — перевод.', {schema:obj({ru:STR}), maxTokens:2000});
+      keyStatus = `<span class="ok">Работает. tere — ${esc(r.ru)}</span>`;
+    }catch(err){ keyStatus = `<span class="err">${esc(sampleErr(err) || "Проверка прервана")}</span>`; }
+    renderSettings();
+  };
+  v.append(claude);
+
+  const inst = h(`<div class="panel"><div class="label">Установка на телефон</div></div>`);
+  if(standalone()) inst.append(h(`<div class="ok">Приложение установлено.</div>`));
+  else {
+    if(installEvt){ const b = h(`<button class="btn primary">Установить приложение</button>`); b.onclick = async ()=>{ installEvt.prompt(); await installEvt.userChoice.catch(()=>{}); installEvt=null; renderSettings(); }; inst.append(b); }
+    inst.append(h(`<div class="note"><b>iPhone (Safari):</b> кнопка «Поделиться» → «На экран „Домой“».<br><b>Android (Chrome):</b> меню ⋮ → «Установить приложение» или «Добавить на главный экран».</div>`));
+  }
+  v.append(inst);
+
+  const data = h(`<div class="panel"><div class="label">Прогресс</div>
+    <div class="note">Сохраните копию, чтобы перенести прогресс на другой телефон или не потерять его при очистке браузера.</div>
+    <div class="row"><button class="btn sm ghost" id="exp">Сохранить копию</button><label class="btn sm ghost" for="imp">Загрузить копию</label><input id="imp" type="file" accept="application/json,.json" hidden></div>
+    <div class="row"><button class="btn sm bad" id="reset">Сбросить прогресс</button></div></div>`);
+  $("#exp",data).onclick = ()=>{
+    const blob = new Blob([JSON.stringify({progress:S.progress, custom:S.custom, log:S.log, dictCache:S.dictCache}, null, 1)], {type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `rukkilill-${today()}.json`; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  };
+  $("#imp",data).onchange = async e=>{
+    const f = e.target.files[0]; if(!f) return;
+    try{ const d = JSON.parse(await f.text());
+      if(typeof d.progress!=="object") throw 0;
+      Object.assign(S, {progress:d.progress||{}, custom:d.custom||[], log:d.log||{}, dictCache:d.dictCache||{}}); persist(); queue=[]; cur=null; toast("Прогресс загружен"); render();
+    }catch(err){ toast("Это не файл копии Rukkilill"); }
+  };
+  const reset = $("#reset",data);
+  reset.onclick = ()=>{
+    if(reset.dataset.armed){ S.progress={}; S.log={}; persist(); queue=[]; cur=null; toast("Прогресс сброшен"); render(); return; }
+    reset.dataset.armed = "1"; reset.textContent = "Точно сбросить? Нажмите ещё раз";
+    setTimeout(()=>{ if(reset.isConnected){ delete reset.dataset.armed; reset.textContent="Сбросить прогресс"; } }, 4000);
+  };
+  v.append(data);
+}
+
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+render();
+</script>
+</body>
+</html>
