@@ -86,6 +86,7 @@ h2{font-family:var(--f-display);font-size:20px;font-weight:500;margin:0;text-wra
 .ex .ru{color:var(--muted);font-size:14px}
 .trans{font-size:24px;font-weight:600;line-height:1.25}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+a.btn{text-decoration:none}
 .btn{border:0;border-radius:var(--r);padding:14px 16px;font-weight:600;font-size:16px;background:var(--sunk);color:var(--fg);display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px}
 .btn.primary{background:var(--accent);color:var(--accent-fg)}
 .btn.bad{background:var(--bad-soft);color:var(--bad)}
@@ -413,10 +414,16 @@ function sampleErr(e){
   if(e?.code==="truncated" || e instanceof SyntaxError) return "Ответ пришёл не полностью. Попробуйте ещё раз.";
   return "Не получилось получить ответ. Попробуйте ещё раз.";
 }
+// Without an API key, questions go to the Claude app/site as a prefilled chat (uses the person's subscription).
+const claudeUrl = prompt => "https://claude.ai/new?q=" + encodeURIComponent(prompt);
+const CLAUDE_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+function claudeLink(label, prompt, cls="primary"){
+  return h(`<a class="btn ${cls}" href="${esc(claudeUrl(prompt))}" target="_blank" rel="noopener">${CLAUDE_ICON} ${esc(label)}</a>`);
+}
+const dictPrompt = q => `Ты эстонско-русский словарь. Я учу эстонский до уровня B2. Слово или фраза: «${q}».
+Дай: начальную форму на эстонском, перевод на русский, часть речи, основные формы (для существительных: omastav, osastav, мн. ч. osastav; для глаголов: ma-инфинитив, da-инфинитив, наст. вр. «ma», прош. вр. «ma»), 2 коротких примера с переводом. Коротко, без лишнего текста.`;
 function connectHint(text){
-  const p = h(`<div class="panel"><div>${esc(text)}</div><button class="btn primary">Подключить Claude</button></div>`);
-  $("button",p).onclick = ()=>{ S.tab="settings"; persist(); render(); window.scrollTo(0,0); };
-  return p;
+  return h(`<p class="note">${esc(text)}</p>`);
 }
 
 // ---------- Tabs ----------
@@ -563,7 +570,12 @@ function renderSent(){
   if(!sample) nav.style.gridTemplateColumns="1fr";
   v.append(nav);
   if(sample) v.append(h(`<p class="note">«Новое от Claude» составит свежее предложение уровня B1–B2 из ваших слов. Проверка и новые предложения оплачиваются с вашего ключа API, обычно это доли цента за запрос.</p>`));
-  else v.append(connectHint("Сейчас перевод сравнивается с эталоном буква в букву. С Claude любой правильный вариант будет засчитан, а ошибки объяснены."));
+  else {
+    const words = shuffle([...seenWords()]).slice(0,8);
+    const list = words.length>=3 ? words.join(", ") : "любые слова уровня B1–B2";
+    v.append(claudeLink("Тренироваться с Claude", `Я учу эстонский до уровня B2, мой родной язык русский. Дай мне по одному предложению на русском для перевода на эстонский (уровень B1–B2, 8–14 слов), используя слова: ${list}. После каждого моего перевода проверь его, коротко объясни ошибки (падежи, спряжение, порядок слов) и дай следующее предложение.`, "ghost"));
+    v.append(connectHint("Без ключа API перевод сравнивается с эталоном. Кнопка «Разобрать в Claude» под результатом откроет Claude, и он проверит твой вариант. Это входит в твою подписку, доплачивать не нужно."));
+  }
 }
 function drawSentResult(panel){
   const box = $("#sent-res", panel); box.innerHTML="";
@@ -579,7 +591,15 @@ function drawSentResult(panel){
   if(r.feedback) el.append(h(`<div>${esc(r.feedback)}</div>`));
   if(r.corrected && normalize(r.corrected)!==normalize(sentAnswer)) el.append(h(`<div><span class="label">Исправленный вариант</span><div class="ref" ${toEt?'lang="et"':""}>${esc(r.corrected)}</div></div>`));
   el.append(h(`<div><span class="label">Эталон</span><div ${toEt?'lang="et"':""}>${esc(ref)}</div></div>`));
-  if(r.offline) el.append(h(`<div class="note">Проверка без Claude: сравнение с эталоном. Другой правильный вариант тоже может быть верным.</div>`));
+  if(r.offline){
+    el.append(h(`<div class="note">Это сравнение с эталоном. Твой вариант может быть правильным, даже если он отличается.</div>`));
+    const src = toEt ? sentCur.ru : sentCur.et;
+    el.append(claudeLink("Разобрать в Claude", `Я учу эстонский до уровня B2, мой родной язык русский. Проверь мой перевод с ${toEt?"русского на эстонский":"эстонского на русский"}.
+Исходное предложение: «${src}»
+Мой перевод: «${sentAnswer.trim()}»
+Эталон: «${ref}»
+Засчитай любой правильный вариант с тем же смыслом. Коротко объясни ошибки по-русски (падежи, спряжение, порядок слов, лексика) и дай исправленный вариант.`));
+  }
   box.append(el);
 }
 async function checkSentence(panel){
@@ -635,14 +655,13 @@ async function generateSentence(btn){
 let dq = "", dEntry = null, dBusy = false, dCtl = null;
 function renderDict(){
   const v = $("#v-dict"); v.innerHTML = "";
-  v.append(h(`<div><h2>Словарь</h2><p class="sub">Эстонский ↔ русский. Ищите в словаре приложения${sample?" или спросите Claude о любом слове: перевод, формы и примеры":""}. Слова, которые вы уже спрашивали, доступны и без интернета.</p></div>`));
+  v.append(h(`<div><h2>Словарь</h2><p class="sub">Эстонский ↔ русский. Ищите в словаре приложения или спросите Claude о любом слове: перевод, формы и примеры${sample?". Слова, которые вы уже спрашивали, доступны и без интернета":""}.</p></div>`));
   const form = h(`<form class="search" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="dict-q" type="search" placeholder="Например: kohustus или обязанность" autocomplete="off" enterkeyhint="search"></form>`);
   const inp = $("input",form); inp.value = dq;
   const results = h(`<div style="display:flex;flex-direction:column;gap:12px"></div>`);
   inp.oninput = ()=>{ dq = inp.value; drawLocal(results); };
   form.onsubmit = (e)=>{ e.preventDefault(); inp.blur(); if(dq.trim()) askClaude(dq.trim(), results); };
   v.append(form, results);
-  if(!sample) v.append(connectHint("Чтобы переводить любые слова, а не только встроенные, подключите Claude своим ключом API."));
   drawLocal(results);
 }
 function drawLocal(results){
@@ -650,7 +669,7 @@ function drawLocal(results){
   const q = normalize(dq);
   if(dEntry || dBusy) results.append(entryView());
   if(!q){
-    if(!dEntry && !dBusy) results.append(h(`<p class="note">Наберите слово на любом из двух языков. ${sample?"Нажмите «Найти» на клавиатуре, чтобы получить подробную статью от Claude.":""}</p>`));
+    if(!dEntry && !dBusy) results.append(h(`<p class="note">Наберите слово на любом из двух языков. ${sample?"Нажмите «Найти» на клавиатуре, чтобы получить подробную статью от Claude.":"Если слова нет во встроенном словаре, кнопка «Спросить в Claude» откроет Claude с готовым запросом: перевод, формы и примеры."}</p>`));
     return;
   }
   const cached = Object.values(S.dictCache).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).map(w=>({et:w.et, ru:w.ru, forms:(w.forms||[]).slice(0,2).map(f=>f.value).join(" · ")}));
@@ -660,7 +679,7 @@ function drawLocal(results){
     const ask = h(`<button class="btn primary">Спросить Claude: «${esc(dq.trim())}»</button>`);
     ask.onclick = ()=>askClaude(dq.trim(), results);
     results.append(ask);
-  }
+  } else results.append(claudeLink(`Спросить в Claude: «${dq.trim()}»`, dictPrompt(dq.trim())));
   if(hits.length){
     const list = h(`<div class="list"></div>`);
     for(const w of hits){
@@ -697,7 +716,7 @@ function entryView(){
 async function askClaude(q, results){
   const key = normalize(q);
   if(S.dictCache[key]){ dEntry = S.dictCache[key]; dBusy = false; drawLocal(results); return; }
-  if(!sample){ toast("Подключите Claude в настройках"); return; }
+  if(!sample){ window.open(claudeUrl(dictPrompt(q)), "_blank", "noopener"); return; }
   dCtl?.abort(); dCtl = new AbortController();
   dBusy = true; dEntry = null; drawLocal(results);
   try{
@@ -723,7 +742,8 @@ function renderSettings(){
   v.append(h(`<div><h2>Настройки</h2><p class="sub">Прогресс и ключ хранятся только на этом телефоне.</p></div>`));
 
   const claude = h(`<div class="panel">
-    <div class="label">Claude: словарь и проверка перевода</div>
+    <div class="label">Ключ API (необязательно)</div>
+    <div class="note">Без ключа всё работает: вопросы открываются в Claude и входят в твою подписку. С ключом ответы приходят прямо в приложение, но API оплачивается отдельно.</div>
     <div class="field"><label for="api-key">Ключ API Anthropic</label>
       <input id="api-key" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
     </div>
