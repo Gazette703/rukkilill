@@ -1,6 +1,6 @@
 // Offline support: app files are served from cache; fonts are cached as they load.
 // Bump VERSION whenever any app file changes so phones pick up the update.
-const VERSION = "rukkilill-v3";
+const VERSION = "rukkilill-v4";
 const APP_FILES = [
   "./", "index.html", "manifest.webmanifest", "vendor/anthropic.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"
