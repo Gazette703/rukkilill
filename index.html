@@ -988,7 +988,15 @@ function renderSettings(){
   v.append(data);
 }
 
-if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator){
+  // When an update takes over, reload once so the new version shows right away.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(hadController && !reloading){ reloading = true; location.reload(); } });
+  navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(reg=>{
+    document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") reg.update().catch(()=>{}); });
+  }).catch(()=>{});
+}
 render();
 </script>
 </body>

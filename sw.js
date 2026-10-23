@@ -1,13 +1,19 @@
 // Offline support: app files are served from cache; fonts are cached as they load.
 // Bump VERSION whenever any app file changes so phones pick up the update.
-const VERSION = "rukkilill-v4";
+const VERSION = "rukkilill-v5";
 const APP_FILES = [
   "./", "index.html", "manifest.webmanifest", "vendor/anthropic.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"
 ];
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(APP_FILES)).then(() => self.skipWaiting()));
+  // cache: "reload" skips the browser's HTTP cache, so a new version never stores stale files.
+  e.waitUntil(caches.open(VERSION)
+    .then(c => Promise.all(APP_FILES.map(f => fetch(f, {cache: "reload"}).then(res => {
+      if (!res.ok) throw new Error(f + " " + res.status);
+      return c.put(f, res);
+    }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", e => {
@@ -25,7 +31,7 @@ self.addEventListener("fetch", e => {
 
   e.respondWith(caches.open(VERSION).then(async cache => {
     const hit = await cache.match(req, {ignoreSearch: !isFont});
-    const fresh = fetch(req).then(res => {
+    const fresh = fetch(req, isFont ? {} : {cache: "no-cache"}).then(res => {
       if (res.ok || res.type === "opaque") cache.put(req, res.clone());
       return res;
     });
