@@ -380,7 +380,7 @@ function normalize(s){ return s.toLowerCase().replace(/[.,!?;:«»"'—–-]/g,"
 
 function updateStat(){
   const n = learnedCount(), total = allWords().length;
-  $("#stat").innerHTML = `Выучено <b>${n}</b> из ${total}<br>Сегодня <b>${S.log[today()]||0}</b> повтор.`;
+  $("#stat").innerHTML = `Выучено <b>${n}</b> из ${total}<br>Сегодня карточек: <b>${S.log[today()]||0}</b>`;
 }
 
 // ---------- Claude (dictionary + grading) ----------
@@ -470,7 +470,7 @@ function renderCards(){
   const v = $("#v-cards"); v.innerHTML = "";
   const topics = [{id:"all",name:"Все"}, ...TOPICS, ...(S.custom.length?[{id:"mine",name:"Мои слова"}]:[])];
   const all = allWords();
-  v.append(h(`<div><h2>Карточки</h2><p class="sub">Слова уровней A2–B2. Если помните — карточка вернётся позже, если нет — скоро снова.</p></div>`));
+  v.append(h(`<div><h2>Карточки</h2><p class="sub">Слова от A2 до B2. Вспомнили слово — оно вернётся через несколько дней. Не вспомнили — повторим его ещё раз сегодня.</p></div>`));
   const chips = h(`<div class="chips" role="group" aria-label="Тема"></div>`);
   for(const t of topics){
     const ws = t.id==="all"?all:all.filter(w=>w.topic===t.id);
