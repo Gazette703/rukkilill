@@ -165,6 +165,29 @@ a{color:var(--accent)}
 .samples{display:flex;flex-direction:column;gap:8px}
 .samples div{background:var(--sunk);border-radius:12px;padding:10px 12px}
 .samples .ru{color:var(--muted);font-size:14px}
+.levels{display:flex;flex-direction:column;gap:8px}
+.level-btn{flex-direction:column;align-items:flex-start;text-align:left;gap:2px}
+.check{display:flex;gap:10px;align-items:center;font-size:16px}
+.check input{width:20px;height:20px}
+.back-btn{align-self:flex-start}
+.item.menu{width:100%;background:none;border:0;border-top:1px solid var(--line);text-align:left;color:var(--fg)}
+.item.menu:first-child{border-top:0}
+.item .val{text-align:right;font-size:14px;max-width:55%}
+.letters{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.letter{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.letter .l{font-family:var(--f-display);font-size:18px}
+.letter .w{font-size:11px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.letter.special{background:var(--accent-soft)}
+.letter.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.big-letter{font-family:var(--f-display);font-size:40px;color:var(--accent)}
+.letter-detail{min-height:132px}
+.pairs{display:flex;flex-direction:column;gap:8px}
+.pair{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center}
+.pair.wide{grid-template-columns:auto 1fr}
+.pair .dg{font-family:var(--f-display);font-size:18px;color:var(--accent);min-width:28px}
+.pair:has(.dg){grid-template-columns:auto auto 1fr}
+.say{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline dotted;text-underline-offset:3px;text-align:left}
+@media (max-width:380px){.pair{grid-template-columns:auto 1fr}}
 </style>
 </head>
 <body>
@@ -182,7 +205,7 @@ a{color:var(--accent)}
   <section class="wrap" id="v-sent" hidden></section>
   <section class="wrap" id="v-chat" hidden></section>
   <section class="wrap" id="v-dict" hidden></section>
-  <section class="wrap" id="v-settings" hidden></section>
+  <section class="wrap" id="v-more" hidden></section>
 </main>
 
 <nav class="tabs" aria-label="Разделы"><div class="in">
@@ -190,7 +213,7 @@ a{color:var(--accent)}
   <button data-tab="sent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Перевод</button>
   <button data-tab="chat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>Чат</button>
   <button data-tab="dict"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a2 2 0 0 0-2 2"/><path d="M20 4v14h-6"/></svg>Словарь</button>
-  <button data-tab="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Настройки</button>
+  <button data-tab="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Ещё</button>
 </div></nav>
 <div class="toast" id="toast" hidden></div>
 
@@ -198,147 +221,172 @@ a{color:var(--accent)}
 import Anthropic from "./vendor/anthropic.js";
 // ---------- Vocabulary: [et, ru, level, forms(gen/part or da-inf/1sg)] ----------
 const TOPICS = [
+ {id:"start", name:"Самое начало", words:[
+  ["tere","привет, здравствуйте","A1","","hello, hi"],["head aega","до свидания","A1","","goodbye"],["aitäh","спасибо","A1","","thank you"],
+  ["palun","пожалуйста","A1","","please; you're welcome"],["vabandust","извините","A1","","sorry, excuse me"],["jah","да","A1","","yes"],["ei","нет; не","A1","","no; not"],
+  ["üks","один","A1","ühe · üht","one"],["kaks","два","A1","kahe · kaht","two"],["kolm","три","A1","kolme · kolme","three"],["neli","четыре","A1","nelja · nelja","four"],
+  ["viis","пять","A1","viie · viit","five"],["kuus","шесть","A1","kuue · kuut","six"],["seitse","семь","A1","seitsme · seitset","seven"],
+  ["kaheksa","восемь","A1","kaheksa · kaheksat","eight"],["üheksa","девять","A1","üheksa · üheksat","nine"],["kümme","десять","A1","kümne · kümmet","ten"],
+  ["ema","мама","A1","ema · ema","mother, mum"],["isa","папа","A1","isa · isa","father, dad"],["laps","ребёнок","A1","lapse · last","child"],
+  ["mees","мужчина; муж","A1","mehe · meest","man; husband"],["naine","женщина; жена","A1","naise · naist","woman; wife"],["nimi","имя","A1","nime · nime","name"],
+  ["kass","кошка","A1","kassi · kassi","cat"],["koer","собака","A1","koera · koera","dog"],["leib","хлеб (чёрный)","A1","leiva · leiba","bread (rye)"],
+  ["piim","молоко","A1","piima · piima","milk"],["kohv","кофе","A1","kohvi · kohvi","coffee"],["hommik","утро","A1","hommiku · hommikut","morning"],
+  ["õhtu","вечер","A1","õhtu · õhtut","evening"],["öö","ночь","A1","öö · ööd","night"],["täna","сегодня","A1","","today"],["homme","завтра","A1","","tomorrow"],
+  ["eile","вчера","A1","","yesterday"],["punane","красный","A1","punase · punast","red"],["sinine","синий","A1","sinise · sinist","blue"],
+  ["valge","белый","A1","valge · valget","white"],["must","чёрный","A1","musta · musta","black"],["roheline","зелёный","A1","rohelise · rohelist","green"],
+  ["kollane","жёлтый","A1","kollase · kollast","yellow"]]},
  {id:"base", name:"Основа", words:[
-  ["maja","дом","A2","maja · maja"],["pere","семья","A2","pere · peret"],["sõber","друг","A2","sõbra · sõpra"],
-  ["töö","работа","A2","töö · tööd"],["aeg","время","A2","aja · aega"],["päev","день","A2","päeva · päeva"],
-  ["nädal","неделя","A2","nädala · nädalat"],["aasta","год","A2","aasta · aastat"],["raha","деньги","A2","raha · raha"],
-  ["linn","город","A2","linna · linna"],["tee","чай; дорога","A2","tee · teed"],["keel","язык","A2","keele · keelt"],
-  ["raamat","книга","A2","raamatu · raamatut"],["söök","еда","A2","söögi · sööki"],["vesi","вода","A2","vee · vett"],
-  ["ilm","погода","A2","ilma · ilma"],["sööma","есть, кушать","A2","süüa · söön"],["jooma","пить","A2","juua · joon"],
-  ["minema","идти","A2","minna · lähen"],["tulema","приходить","A2","tulla · tulen"],["tegema","делать","A2","teha · teen"],
-  ["nägema","видеть","A2","näha · näen"],["ostma","покупать","A2","osta · ostan"],["elama","жить","A2","elada · elan"],
-  ["rääkima","говорить","A2","rääkida · räägin"],["tahtma","хотеть","A2","tahta · tahan"],["ilus","красивый","A2","ilusa · ilusat"],
-  ["suur","большой","A2","suure · suurt"],["väike","маленький","A2","väikese · väikest"],["hea","хороший","A2","hea · head"],
-  ["kallis","дорогой","A2","kalli · kallist"],["odav","дешёвый","A2","odava · odavat"]]},
+  ["maja","дом","A2","maja · maja","house"],["pere","семья","A2","pere · peret","family"],["sõber","друг","A2","sõbra · sõpra","friend"],
+  ["töö","работа","A2","töö · tööd","work, job"],["aeg","время","A2","aja · aega","time"],["päev","день","A2","päeva · päeva","day"],
+  ["nädal","неделя","A2","nädala · nädalat","week"],["aasta","год","A2","aasta · aastat","year"],["raha","деньги","A2","raha · raha","money"],
+  ["linn","город","A2","linna · linna","city, town"],["tee","чай; дорога","A2","tee · teed","tea; road"],["keel","язык","A2","keele · keelt","language"],
+  ["raamat","книга","A2","raamatu · raamatut","book"],["söök","еда","A2","söögi · sööki","food"],["vesi","вода","A2","vee · vett","water"],
+  ["ilm","погода","A2","ilma · ilma","weather"],["sööma","есть, кушать","A2","süüa · söön","to eat"],["jooma","пить","A2","juua · joon","to drink"],
+  ["minema","идти","A2","minna · lähen","to go"],["tulema","приходить","A2","tulla · tulen","to come"],["tegema","делать","A2","teha · teen","to do, to make"],
+  ["nägema","видеть","A2","näha · näen","to see"],["ostma","покупать","A2","osta · ostan","to buy"],["elama","жить","A2","elada · elan","to live"],
+  ["rääkima","говорить","A2","rääkida · räägin","to speak, to talk"],["tahtma","хотеть","A2","tahta · tahan","to want"],["ilus","красивый","A2","ilusa · ilusat","beautiful"],
+  ["suur","большой","A2","suure · suurt","big"],["väike","маленький","A2","väikese · väikest","small"],["hea","хороший","A2","hea · head","good"],
+  ["kallis","дорогой","A2","kalli · kallist","expensive; dear"],["odav","дешёвый","A2","odava · odavat","cheap"]]},
  {id:"home", name:"Дом и быт", words:[
-  ["korter","квартира","B1","korteri · korterit"],["tuba","комната","B1","toa · tuba"],["köök","кухня","B1","köögi · kööki"],
-  ["aken","окно","B1","akna · akent"],["uks","дверь","B1","ukse · ust"],["üür","аренда, квартплата","B1","üüri · üüri"],
-  ["naaber","сосед","B1","naabri · naabrit"],["koristama","убирать","B1","koristada · koristan"],["pesema","мыть","B1","pesta · pesen"],
-  ["valmistama","готовить, изготавливать","B1","valmistada · valmistan"],["pood","магазин","B1","poe · poodi"],["arve","счёт (к оплате)","B1","arve · arvet"]]},
+  ["korter","квартира","B1","korteri · korterit","apartment, flat"],["tuba","комната","B1","toa · tuba","room"],["köök","кухня","B1","köögi · kööki","kitchen"],
+  ["aken","окно","B1","akna · akent","window"],["uks","дверь","B1","ukse · ust","door"],["üür","аренда, квартплата","B1","üüri · üüri","rent"],
+  ["naaber","сосед","B1","naabri · naabrit","neighbour"],["koristama","убирать","B1","koristada · koristan","to clean, to tidy up"],["pesema","мыть","B1","pesta · pesen","to wash"],
+  ["valmistama","готовить, изготавливать","B1","valmistada · valmistan","to prepare, to make"],["pood","магазин","B1","poe · poodi","shop, store"],["arve","счёт (к оплате)","B1","arve · arvet","bill, invoice"]]},
  {id:"work", name:"Работа и учёба", words:[
-  ["ülemus","начальник","B1","ülemuse · ülemust"],["kolleeg","коллега","B1","kolleegi · kolleegi"],["palk","зарплата","B1","palga · palka"],
-  ["koosolek","совещание","B1","koosoleku · koosolekut"],["ettevõte","предприятие, компания","B1","ettevõtte · ettevõtet"],
-  ["kogemus","опыт","B1","kogemuse · kogemust"],["oskus","умение, навык","B1","oskuse · oskust"],["tähtaeg","срок, дедлайн","B1","tähtaja · tähtaega"],
-  ["õppima","учиться, изучать","B1","õppida · õpin"],["töötama","работать","B1","töötada · töötan"],
-  ["kandideerima","подавать заявку (на должность)","B2","kandideerida · kandideerin"],["lõpetama","заканчивать","B1","lõpetada · lõpetan"],
-  ["ülikool","университет","B1","ülikooli · ülikooli"],["eksam","экзамен","B1","eksami · eksamit"]]},
+  ["ülemus","начальник","B1","ülemuse · ülemust","boss"],["kolleeg","коллега","B1","kolleegi · kolleegi","colleague"],["palk","зарплата","B1","palga · palka","salary"],
+  ["koosolek","совещание","B1","koosoleku · koosolekut","meeting"],["ettevõte","предприятие, компания","B1","ettevõtte · ettevõtet","company, enterprise"],
+  ["kogemus","опыт","B1","kogemuse · kogemust","experience"],["oskus","умение, навык","B1","oskuse · oskust","skill"],["tähtaeg","срок, дедлайн","B1","tähtaja · tähtaega","deadline"],
+  ["õppima","учиться, изучать","B1","õppida · õpin","to study, to learn"],["töötama","работать","B1","töötada · töötan","to work"],
+  ["kandideerima","подавать заявку (на должность)","B2","kandideerida · kandideerin","to apply (for a job)"],["lõpetama","заканчивать","B1","lõpetada · lõpetan","to finish"],
+  ["ülikool","университет","B1","ülikooli · ülikooli","university"],["eksam","экзамен","B1","eksami · eksamit","exam"]]},
  {id:"city", name:"Город и поездки", words:[
-  ["rong","поезд","B1","rongi · rongi"],["buss","автобус","B1","bussi · bussi"],["peatus","остановка","B1","peatuse · peatust"],
-  ["pilet","билет","B1","pileti · piletit"],["reis","поездка, путешествие","B1","reisi · reisi"],["jaam","вокзал, станция","B1","jaama · jaama"],
-  ["tänav","улица","B1","tänava · tänavat"],["sõitma","ехать","B1","sõita · sõidan"],["jõudma","добраться, успеть","B1","jõuda · jõuan"],
-  ["hilinema","опаздывать","B1","hilineda · hilinen"],["puhkus","отпуск, отдых","B1","puhkuse · puhkust"],["mets","лес","B1","metsa · metsa"],
-  ["meri","море","B1","mere · merd"]]},
+  ["rong","поезд","B1","rongi · rongi","train"],["buss","автобус","B1","bussi · bussi","bus"],["peatus","остановка","B1","peatuse · peatust","stop"],
+  ["pilet","билет","B1","pileti · piletit","ticket"],["reis","поездка, путешествие","B1","reisi · reisi","trip, journey"],["jaam","вокзал, станция","B1","jaama · jaama","station"],
+  ["tänav","улица","B1","tänava · tänavat","street"],["sõitma","ехать","B1","sõita · sõidan","to ride, to drive, to travel"],["jõudma","добраться, успеть","B1","jõuda · jõuan","to arrive, to make it (in time)"],
+  ["hilinema","опаздывать","B1","hilineda · hilinen","to be late"],["puhkus","отпуск, отдых","B1","puhkuse · puhkust","vacation, holiday"],["mets","лес","B1","metsa · metsa","forest"],
+  ["meri","море","B1","mere · merd","sea"]]},
  {id:"health", name:"Здоровье", words:[
-  ["tervis","здоровье","B1","tervise · tervist"],["arst","врач","B1","arsti · arsti"],["haige","больной","B1","haige · haiget"],
-  ["valu","боль","B1","valu · valu"],["palavik","температура, жар","B1","palaviku · palavikku"],["rohi","лекарство","B1","rohu · rohtu"],
-  ["väsinud","уставший","B1","väsinu · väsinut"],["magama","спать","B1","magada · magan"],["tundma","чувствовать; знать (кого-то)","B1","tunda · tunnen"],
-  ["kõht","живот","B1","kõhu · kõhtu"],["pea","голова","B1","pea · pead"]]},
+  ["tervis","здоровье","B1","tervise · tervist","health"],["arst","врач","B1","arsti · arsti","doctor"],["haige","больной","B1","haige · haiget","ill, sick"],
+  ["valu","боль","B1","valu · valu","pain"],["palavik","температура, жар","B1","palaviku · palavikku","fever"],["rohi","лекарство","B1","rohu · rohtu","medicine"],
+  ["väsinud","уставший","B1","väsinu · väsinut","tired"],["magama","спать","B1","magada · magan","to sleep"],["tundma","чувствовать; знать (кого-то)","B1","tunda · tunnen","to feel; to know (a person)"],
+  ["kõht","живот","B1","kõhu · kõhtu","stomach, belly"],["pea","голова","B1","pea · pead","head"]]},
  {id:"feel", name:"Чувства", words:[
-  ["rõõm","радость","B1","rõõmu · rõõmu"],["mure","забота, тревога","B1","mure · muret"],["hirm","страх","B1","hirmu · hirmu"],
-  ["õnnelik","счастливый","B1","õnneliku · õnnelikku"],["kurb","грустный","B1","kurva · kurba"],["vihane","сердитый, злой","B1","vihase · vihast"],
-  ["uudishimulik","любопытный","B2","uudishimuliku · uudishimulikku"],["kannatlik","терпеливый","B2","kannatliku · kannatlikku"],
-  ["usaldama","доверять","B2","usaldada · usaldan"],["kartma","бояться","B1","karta · kardan"],["meeldima","нравиться","B1","meeldida · meeldin"],
-  ["armastama","любить","B1","armastada · armastan"],["häbenema","стыдиться","B2","häbeneda · häbenen"],["muretsema","волноваться","B1","muretseda · muretsen"]]},
+  ["rõõm","радость","B1","rõõmu · rõõmu","joy"],["mure","забота, тревога","B1","mure · muret","worry, concern"],["hirm","страх","B1","hirmu · hirmu","fear"],
+  ["õnnelik","счастливый","B1","õnneliku · õnnelikku","happy"],["kurb","грустный","B1","kurva · kurba","sad"],["vihane","сердитый, злой","B1","vihase · vihast","angry"],
+  ["uudishimulik","любопытный","B2","uudishimuliku · uudishimulikku","curious"],["kannatlik","терпеливый","B2","kannatliku · kannatlikku","patient"],
+  ["usaldama","доверять","B2","usaldada · usaldan","to trust"],["kartma","бояться","B1","karta · kardan","to be afraid, to fear"],["meeldima","нравиться","B1","meeldida · meeldin","to be liked (≈ to like)"],
+  ["armastama","любить","B1","armastada · armastan","to love"],["häbenema","стыдиться","B2","häbeneda · häbenen","to be ashamed"],["muretsema","волноваться","B1","muretseda · muretsen","to worry"]]},
  {id:"society", name:"Общество", words:[
-  ["valitsus","правительство","B2","valitsuse · valitsust"],["seadus","закон","B2","seaduse · seadust"],["valimised","выборы","B2","valimiste · valimisi"],
-  ["kodanik","гражданин","B2","kodaniku · kodanikku"],["ühiskond","общество","B2","ühiskonna · ühiskonda"],["majandus","экономика","B2","majanduse · majandust"],
-  ["hind","цена","B1","hinna · hinda"],["tõusma","расти, подниматься","B2","tõusta · tõusen"],["langema","падать, снижаться","B2","langeda · langen"],
-  ["otsustama","решать","B2","otsustada · otsustan"],["arutama","обсуждать","B2","arutada · arutan"],["mõjutama","влиять","B2","mõjutada · mõjutan"],
-  ["keskkond","окружающая среда","B2","keskkonna · keskkonda"],["uuring","исследование","B2","uuringu · uuringut"],["väide","утверждение","B2","väite · väidet"],
-  ["probleem","проблема","B1","probleemi · probleemi"],["lahendus","решение (задачи)","B2","lahenduse · lahendust"],["areng","развитие","B2","arengu · arengut"]]},
+  ["valitsus","правительство","B2","valitsuse · valitsust","government"],["seadus","закон","B2","seaduse · seadust","law"],["valimised","выборы","B2","valimiste · valimisi","elections"],
+  ["kodanik","гражданин","B2","kodaniku · kodanikku","citizen"],["ühiskond","общество","B2","ühiskonna · ühiskonda","society"],["majandus","экономика","B2","majanduse · majandust","economy"],
+  ["hind","цена","B1","hinna · hinda","price"],["tõusma","расти, подниматься","B2","tõusta · tõusen","to rise, to go up"],["langema","падать, снижаться","B2","langeda · langen","to fall, to decrease"],
+  ["otsustama","решать","B2","otsustada · otsustan","to decide"],["arutama","обсуждать","B2","arutada · arutan","to discuss"],["mõjutama","влиять","B2","mõjutada · mõjutan","to influence, to affect"],
+  ["keskkond","окружающая среда","B2","keskkonna · keskkonda","environment"],["uuring","исследование","B2","uuringu · uuringut","study, research"],["väide","утверждение","B2","väite · väidet","claim, statement"],
+  ["probleem","проблема","B1","probleemi · probleemi","problem"],["lahendus","решение (задачи)","B2","lahenduse · lahendust","solution"],["areng","развитие","B2","arengu · arengut","development"]]},
  {id:"abstract", name:"Связки и абстракции", words:[
-  ["siiski","всё же, тем не менее","B2",""],["seetõttu","поэтому","B2",""],["kuigi","хотя","B2",""],["ometi","однако, всё-таки","B2",""],
-  ["vähemalt","по крайней мере","B2",""],["tegelikult","на самом деле","B2",""],["järelikult","следовательно","B2",""],["vastupidi","наоборот","B2",""],
-  ["eesmärk","цель","B2","eesmärgi · eesmärki"],["võimalus","возможность","B2","võimaluse · võimalust"],["põhjus","причина","B2","põhjuse · põhjust"],
-  ["tagajärg","последствие","B2","tagajärje · tagajärge"],["arvamus","мнение","B2","arvamuse · arvamust"],["vastutus","ответственность","B2","vastutuse · vastutust"],
-  ["nõustuma","соглашаться","B2","nõustuda · nõustun"],["väitma","утверждать","B2","väita · väidan"],["selgitama","объяснять","B2","selgitada · selgitan"],
-  ["vältima","избегать","B2","vältida · väldin"],["saavutama","достигать","B2","saavutada · saavutan"],["tähendama","означать","B2","tähendada · tähendan"],
-  ["oluline","важный","B2","olulise · olulist"],["vajalik","необходимый","B2","vajaliku · vajalikku"],["võimalik","возможный","B2","võimaliku · võimalikku"],
-  ["keeruline","сложный","B2","keerulise · keerulist"]]}
+  ["siiski","всё же, тем не менее","B2","","still, nevertheless"],["seetõttu","поэтому","B2","","therefore"],["kuigi","хотя","B2","","although"],["ometi","однако, всё-таки","B2","","yet, after all"],
+  ["vähemalt","по крайней мере","B2","","at least"],["tegelikult","на самом деле","B2","","actually"],["järelikult","следовательно","B2","","consequently"],["vastupidi","наоборот","B2","","on the contrary"],
+  ["eesmärk","цель","B2","eesmärgi · eesmärki","goal"],["võimalus","возможность","B2","võimaluse · võimalust","opportunity, possibility"],["põhjus","причина","B2","põhjuse · põhjust","reason"],
+  ["tagajärg","последствие","B2","tagajärje · tagajärge","consequence"],["arvamus","мнение","B2","arvamuse · arvamust","opinion"],["vastutus","ответственность","B2","vastutuse · vastutust","responsibility"],
+  ["nõustuma","соглашаться","B2","nõustuda · nõustun","to agree"],["väitma","утверждать","B2","väita · väidan","to claim"],["selgitama","объяснять","B2","selgitada · selgitan","to explain"],
+  ["vältima","избегать","B2","vältida · väldin","to avoid"],["saavutama","достигать","B2","saavutada · saavutan","to achieve"],["tähendama","означать","B2","tähendada · tähendan","to mean"],
+  ["oluline","важный","B2","olulise · olulist","important"],["vajalik","необходимый","B2","vajaliku · vajalikku","necessary"],["võimalik","возможный","B2","võimaliku · võimalikku","possible"],
+  ["keeruline","сложный","B2","keerulise · keerulist","complicated, difficult"]]}
 ];
 // ---------- Sentences: [et, ru, level, words used] ----------
 const SENTENCES = [
- ["Minu pere elab väikeses majas.","Моя семья живёт в маленьком доме.","A2",["pere","elama","väike","maja"]],
- ["Ma joon hommikuti teed.","По утрам я пью чай.","A2",["jooma","tee"]],
- ["Täna on ilus ilm.","Сегодня хорошая погода.","A2",["ilus","ilm"]],
- ["Ma tahan osta uue raamatu.","Я хочу купить новую книгу.","A2",["tahtma","ostma","raamat"]],
- ["See linn on suur, aga mitte kallis.","Этот город большой, но не дорогой.","A2",["linn","suur","kallis"]],
- ["Kas sa räägid eesti keelt?","Ты говоришь по-эстонски?","A2",["rääkima","keel"]],
- ["Minu sõber tuleb homme meile külla.","Мой друг придёт к нам завтра в гости.","A2",["sõber","tulema"]],
- ["Mul ei ole täna aega.","У меня сегодня нет времени.","A2",["aeg","päev"]],
- ["Me sööme õhtul koos.","Вечером мы едим вместе.","A2",["sööma"]],
- ["Ma lähen poodi vett ostma.","Я иду в магазин купить воды.","A2",["minema","pood","vesi","ostma"]],
- ["Raha ei too õnne.","Деньги не приносят счастья.","A2",["raha"]],
- ["Kas sa nägid eile seda filmi?","Ты видел вчера этот фильм?","A2",["nägema"]],
- ["Mida sa nädalavahetusel teed?","Что ты делаешь на выходных?","A2",["tegema","nädal"]],
- ["Odav ei tähenda alati halba.","Дешёвое не всегда значит плохое.","B2",["odav","tähendama"]],
- ["Ma armastan oma peret.","Я люблю свою семью.","A2",["armastama","pere"]],
- ["Meie korteris on kolm tuba ja suur köök.","В нашей квартире три комнаты и большая кухня.","B1",["korter","tuba","köök","suur"]],
- ["Ma koristan oma tuba iga nädal.","Я убираю свою комнату каждую неделю.","B1",["koristama","tuba","nädal"]],
- ["Üür on sel aastal jälle tõusnud.","Квартплата в этом году снова выросла.","B1",["üür","aasta","tõusma"]],
- ["Palun ära ava akent, väljas on külm.","Пожалуйста, не открывай окно, на улице холодно.","B1",["aken"]],
- ["Palun sulge uks.","Пожалуйста, закрой дверь.","A2",["uks"]],
- ["Elektriarve oli sel kuul väga suur.","Счёт за электричество в этом месяце был очень большим.","B1",["arve","suur"]],
- ["Ema valmistab köögis õhtusööki.","Мама готовит ужин на кухне.","B1",["valmistama","köök","söök"]],
- ["Meie naaber on väga õnnelik, sest tal sündis poeg.","Наш сосед очень счастлив, потому что у него родился сын.","B1",["naaber","õnnelik"]],
- ["Ta pesi nõud ja läks magama.","Он помыл посуду и пошёл спать.","B1",["pesema","minema","magama"]],
- ["Mu ülemus tahab homme koosolekut pidada.","Мой начальник хочет завтра провести совещание.","B1",["ülemus","koosolek","tahtma"]],
- ["Ta töötab suures ettevõttes juba viis aastat.","Он работает в большой компании уже пять лет.","B1",["töötama","ettevõte","suur","aasta"]],
- ["Mul on selles valdkonnas palju kogemusi.","У меня много опыта в этой области.","B1",["kogemus"]],
- ["Ma kandideerisin uuele töökohale.","Я подал заявку на новую должность.","B2",["kandideerima","töö"]],
- ["Tähtaeg on reedel, seega pean kiirustama.","Срок в пятницу, поэтому мне нужно спешить.","B1",["tähtaeg"]],
- ["Kolleeg aitas mul probleemi lahendada.","Коллега помог мне решить проблему.","B1",["kolleeg","probleem"]],
- ["Ta õpib ülikoolis majandust.","Она изучает экономику в университете.","B1",["õppima","ülikool","majandus"]],
- ["Kui ma eksami lõpetasin, olin väga väsinud.","Когда я закончил экзамен, я был очень уставшим.","B1",["eksam","lõpetama","väsinud"]],
- ["Palk on hea, aga töö on keeruline.","Зарплата хорошая, но работа сложная.","B1",["palk","hea","töö","keeruline"]],
- ["Rong jõuab jaama kell kaheksa.","Поезд прибывает на вокзал в восемь часов.","B1",["rong","jõudma","jaam"]],
- ["Ma hilinesin, sest buss ei tulnud.","Я опоздал, потому что автобус не пришёл.","B1",["hilinema","buss","tulema"]],
- ["Kus on lähim bussipeatus?","Где ближайшая автобусная остановка?","B1",["peatus","buss"]],
- ["Me sõidame puhkuse ajal mere äärde.","Во время отпуска мы поедем на море.","B1",["sõitma","puhkus","meri","aeg"]],
- ["Pilet Tartusse maksab kümme eurot.","Билет до Тарту стоит десять евро.","B1",["pilet"]],
- ["Suvel meeldib mulle metsas jalutada.","Летом мне нравится гулять в лесу.","B1",["meeldima","mets"]],
- ["Tänaval on palju inimesi.","На улице много людей.","A2",["tänav"]],
- ["Reis Tallinnast Pärnusse kestis kaks tundi.","Поездка из Таллинна в Пярну длилась два часа.","B1",["reis"]],
- ["Mul on palavik ja pea valutab.","У меня температура и болит голова.","B1",["palavik","pea","valu"]],
- ["Arst ütles, et pean seda rohtu võtma kolm korda päevas.","Врач сказал, что мне нужно принимать это лекарство три раза в день.","B1",["arst","rohi","päev"]],
- ["Ta ei tunne end hästi, sest ta on haige.","Он плохо себя чувствует, потому что болен.","B1",["tundma","haige"]],
- ["Hea uni on tervise jaoks väga oluline.","Хороший сон очень важен для здоровья.","B1",["hea","tervis","oluline"]],
- ["Mu kõht valutab.","У меня болит живот.","B1",["kõht","valu"]],
- ["Ma kardan, et me ei jõua õigeks ajaks.","Боюсь, что мы не успеем вовремя.","B1",["kartma","jõudma","aeg"]],
- ["Ära muretse, kõik läheb hästi.","Не волнуйся, всё будет хорошо.","B1",["muretsema","minema"]],
- ["Ma magasin halvasti, sest mul oli palju muret.","Я плохо спал, потому что у меня было много забот.","B1",["magama","mure"]],
- ["Ta oli vihane, sest keegi ei usaldanud teda.","Он злился, потому что никто ему не доверял.","B2",["vihane","usaldama"]],
- ["Lapsed on sageli väga uudishimulikud.","Дети часто очень любопытны.","B2",["uudishimulik"]],
- ["Õpetaja peab olema kannatlik.","Учитель должен быть терпеливым.","B2",["kannatlik"]],
- ["Tema rõõm oli suurem kui hirm.","Его радость была сильнее страха.","B1",["rõõm","hirm","suur"]],
- ["Ta oli kurb, kui sõber ära kolis.","Ему было грустно, когда друг переехал.","B1",["kurb","sõber"]],
- ["Ta häbenes oma viga.","Он стыдился своей ошибки.","B2",["häbenema"]],
- ["Valitsus otsustas uue seaduse vastu võtta.","Правительство решило принять новый закон.","B2",["valitsus","otsustama","seadus"]],
- ["Hinnad on viimastel kuudel kiiresti tõusnud.","Цены в последние месяцы быстро выросли.","B2",["hind","tõusma"]],
- ["Toidu hind langes kümme protsenti.","Цена на продукты снизилась на десять процентов.","B2",["hind","langema"]],
- ["Iga kodanik peaks valimistel osalema.","Каждый гражданин должен участвовать в выборах.","B2",["kodanik","valimised"]],
- ["Uuring näitas, et keskkonnaprobleemid mõjutavad kogu ühiskonda.","Исследование показало, что экологические проблемы влияют на всё общество.","B2",["uuring","keskkond","probleem","mõjutama","ühiskond"]],
- ["Me arutasime koosolekul mitut võimalikku lahendust.","На совещании мы обсудили несколько возможных решений.","B2",["arutama","koosolek","võimalik","lahendus"]],
- ["Majanduse areng sõltub paljudest teguritest.","Развитие экономики зависит от многих факторов.","B2",["majandus","areng"]],
- ["Kuigi ilm oli halb, läksime siiski metsa.","Хотя погода была плохой, мы всё же пошли в лес.","B2",["kuigi","ilm","siiski","mets","minema"]],
- ["Ma ei nõustu selle väitega. Vastupidi, minu arvates on see vale.","Я не согласен с этим утверждением. Наоборот, по-моему, оно неверно.","B2",["nõustuma","väide","vastupidi"]],
- ["Selle otsuse tagajärjed on tegelikult väga keerulised.","Последствия этого решения на самом деле очень сложные.","B2",["tagajärg","tegelikult","keeruline"]],
- ["Meie eesmärk on vältida samu vigu.","Наша цель — избежать тех же ошибок.","B2",["eesmärk","vältima"]],
- ["Ta selgitas, mida see sõna tähendab.","Она объяснила, что означает это слово.","B2",["selgitama","tähendama"]],
- ["Juhil on suur vastutus.","У руководителя большая ответственность.","B2",["vastutus","suur"]],
- ["Mis on selle probleemi peamine põhjus?","Какова главная причина этой проблемы?","B2",["põhjus","probleem"]],
- ["Vähemalt saavutasime oma eesmärgi.","По крайней мере, мы достигли своей цели.","B2",["vähemalt","saavutama","eesmärk"]],
- ["Ta ei õppinud, järelikult ei sooritanud ta eksamit.","Он не учился, следовательно, не сдал экзамен.","B2",["õppima","järelikult","eksam"]],
- ["Ma austan sinu arvamust, kuid olen ometi teisel arvamusel.","Я уважаю твоё мнение, но всё же придерживаюсь другого.","B2",["arvamus","ometi"]],
- ["Keeleoskus annab tööturul rohkem võimalusi.","Знание языка даёт больше возможностей на рынке труда.","B2",["oskus","keel","võimalus","töö"]],
- ["Seetõttu on vajalik leida uus lahendus.","Поэтому необходимо найти новое решение.","B2",["seetõttu","vajalik","lahendus"]],
- ["Ta väidab, et ei teadnud midagi.","Он утверждает, что ничего не знал.","B2",["väitma"]]
+ ["Tere, minu nimi on Anna.","Привет, меня зовут Анна.","A1",["tere","nimi"],"Hi, my name is Anna."],
+ ["Mul on kass ja koer.","У меня есть кошка и собака.","A1",["kass","koer"],"I have a cat and a dog."],
+ ["Ma joon hommikul kohvi.","Утром я пью кофе.","A1",["jooma","hommik","kohv"],"I drink coffee in the morning."],
+ ["Aitäh, see on väga hea!","Спасибо, это очень вкусно!","A1",["aitäh","hea"],"Thank you, this is very good!"],
+ ["Minu ema ja isa elavad Tartus.","Мои мама и папа живут в Тарту.","A1",["ema","isa","elama"],"My mum and dad live in Tartu."],
+ ["Head aega, kohtume homme!","До свидания, увидимся завтра!","A1",["head aega","homme"],"Goodbye, see you tomorrow!"],
+ ["Mul on kaks last.","У меня двое детей.","A1",["kaks","laps"],"I have two children."],
+ ["Palun üks leib ja üks piim.","Один хлеб и одно молоко, пожалуйста.","A1",["palun","üks","leib","piim"],"One bread and one milk, please."],
+ ["Vabandust, ma ei saa aru.","Извините, я не понимаю.","A1",["vabandust","ei"],"Sorry, I don't understand."],
+ ["Minu auto on punane.","Моя машина красная.","A1",["punane"],"My car is red."],
+ ["Eile õhtul olin kodus.","Вчера вечером я был дома.","A1",["eile","õhtu"],"Yesterday evening I was at home."],
+ ["Minu pere elab väikeses majas.","Моя семья живёт в маленьком доме.","A2",["pere","elama","väike","maja"],"My family lives in a small house."],
+ ["Ma joon hommikuti teed.","По утрам я пью чай.","A2",["jooma","tee"],"I drink tea in the mornings."],
+ ["Täna on ilus ilm.","Сегодня хорошая погода.","A2",["ilus","ilm"],"The weather is nice today."],
+ ["Ma tahan osta uue raamatu.","Я хочу купить новую книгу.","A2",["tahtma","ostma","raamat"],"I want to buy a new book."],
+ ["See linn on suur, aga mitte kallis.","Этот город большой, но не дорогой.","A2",["linn","suur","kallis"],"This city is big, but not expensive."],
+ ["Kas sa räägid eesti keelt?","Ты говоришь по-эстонски?","A2",["rääkima","keel"],"Do you speak Estonian?"],
+ ["Minu sõber tuleb homme meile külla.","Мой друг придёт к нам завтра в гости.","A2",["sõber","tulema"],"My friend is coming to visit us tomorrow."],
+ ["Mul ei ole täna aega.","У меня сегодня нет времени.","A2",["aeg","päev"],"I don't have time today."],
+ ["Me sööme õhtul koos.","Вечером мы едим вместе.","A2",["sööma"],"We eat together in the evening."],
+ ["Ma lähen poodi vett ostma.","Я иду в магазин купить воды.","A2",["minema","pood","vesi","ostma"],"I'm going to the shop to buy water."],
+ ["Raha ei too õnne.","Деньги не приносят счастья.","A2",["raha"],"Money doesn't bring happiness."],
+ ["Kas sa nägid eile seda filmi?","Ты видел вчера этот фильм?","A2",["nägema"],"Did you see that film yesterday?"],
+ ["Mida sa nädalavahetusel teed?","Что ты делаешь на выходных?","A2",["tegema","nädal"],"What are you doing at the weekend?"],
+ ["Odav ei tähenda alati halba.","Дешёвое не всегда значит плохое.","B2",["odav","tähendama"],"Cheap doesn't always mean bad."],
+ ["Ma armastan oma peret.","Я люблю свою семью.","A2",["armastama","pere"],"I love my family."],
+ ["Meie korteris on kolm tuba ja suur köök.","В нашей квартире три комнаты и большая кухня.","B1",["korter","tuba","köök","suur"],"Our apartment has three rooms and a big kitchen."],
+ ["Ma koristan oma tuba iga nädal.","Я убираю свою комнату каждую неделю.","B1",["koristama","tuba","nädal"],"I clean my room every week."],
+ ["Üür on sel aastal jälle tõusnud.","Квартплата в этом году снова выросла.","B1",["üür","aasta","tõusma"],"The rent has gone up again this year."],
+ ["Palun ära ava akent, väljas on külm.","Пожалуйста, не открывай окно, на улице холодно.","B1",["aken"],"Please don't open the window, it's cold outside."],
+ ["Palun sulge uks.","Пожалуйста, закрой дверь.","A2",["uks"],"Please close the door."],
+ ["Elektriarve oli sel kuul väga suur.","Счёт за электричество в этом месяце был очень большим.","B1",["arve","suur"],"The electricity bill was very high this month."],
+ ["Ema valmistab köögis õhtusööki.","Мама готовит ужин на кухне.","B1",["valmistama","köök","söök"],"Mum is making dinner in the kitchen."],
+ ["Meie naaber on väga õnnelik, sest tal sündis poeg.","Наш сосед очень счастлив, потому что у него родился сын.","B1",["naaber","õnnelik"],"Our neighbour is very happy because his son was born."],
+ ["Ta pesi nõud ja läks magama.","Он помыл посуду и пошёл спать.","B1",["pesema","minema","magama"],"He washed the dishes and went to bed."],
+ ["Mu ülemus tahab homme koosolekut pidada.","Мой начальник хочет завтра провести совещание.","B1",["ülemus","koosolek","tahtma"],"My boss wants to hold a meeting tomorrow."],
+ ["Ta töötab suures ettevõttes juba viis aastat.","Он работает в большой компании уже пять лет.","B1",["töötama","ettevõte","suur","aasta"],"He has been working at a big company for five years."],
+ ["Mul on selles valdkonnas palju kogemusi.","У меня много опыта в этой области.","B1",["kogemus"],"I have a lot of experience in this field."],
+ ["Ma kandideerisin uuele töökohale.","Я подал заявку на новую должность.","B2",["kandideerima","töö"],"I applied for a new job."],
+ ["Tähtaeg on reedel, seega pean kiirustama.","Срок в пятницу, поэтому мне нужно спешить.","B1",["tähtaeg"],"The deadline is on Friday, so I have to hurry."],
+ ["Kolleeg aitas mul probleemi lahendada.","Коллега помог мне решить проблему.","B1",["kolleeg","probleem"],"A colleague helped me solve the problem."],
+ ["Ta õpib ülikoolis majandust.","Она изучает экономику в университете.","B1",["õppima","ülikool","majandus"],"She studies economics at university."],
+ ["Kui ma eksami lõpetasin, olin väga väsinud.","Когда я закончил экзамен, я был очень уставшим.","B1",["eksam","lõpetama","väsinud"],"When I finished the exam, I was very tired."],
+ ["Palk on hea, aga töö on keeruline.","Зарплата хорошая, но работа сложная.","B1",["palk","hea","töö","keeruline"],"The salary is good, but the work is difficult."],
+ ["Rong jõuab jaama kell kaheksa.","Поезд прибывает на вокзал в восемь часов.","B1",["rong","jõudma","jaam"],"The train arrives at the station at eight o'clock."],
+ ["Ma hilinesin, sest buss ei tulnud.","Я опоздал, потому что автобус не пришёл.","B1",["hilinema","buss","tulema"],"I was late because the bus didn't come."],
+ ["Kus on lähim bussipeatus?","Где ближайшая автобусная остановка?","B1",["peatus","buss"],"Where is the nearest bus stop?"],
+ ["Me sõidame puhkuse ajal mere äärde.","Во время отпуска мы поедем на море.","B1",["sõitma","puhkus","meri","aeg"],"During our holiday we're going to the seaside."],
+ ["Pilet Tartusse maksab kümme eurot.","Билет до Тарту стоит десять евро.","B1",["pilet"],"A ticket to Tartu costs ten euros."],
+ ["Suvel meeldib mulle metsas jalutada.","Летом мне нравится гулять в лесу.","B1",["meeldima","mets"],"In summer I like walking in the forest."],
+ ["Tänaval on palju inimesi.","На улице много людей.","A2",["tänav"],"There are a lot of people on the street."],
+ ["Reis Tallinnast Pärnusse kestis kaks tundi.","Поездка из Таллинна в Пярну длилась два часа.","B1",["reis"],"The trip from Tallinn to Pärnu took two hours."],
+ ["Mul on palavik ja pea valutab.","У меня температура и болит голова.","B1",["palavik","pea","valu"],"I have a fever and a headache."],
+ ["Arst ütles, et pean seda rohtu võtma kolm korda päevas.","Врач сказал, что мне нужно принимать это лекарство три раза в день.","B1",["arst","rohi","päev"],"The doctor said I have to take this medicine three times a day."],
+ ["Ta ei tunne end hästi, sest ta on haige.","Он плохо себя чувствует, потому что болен.","B1",["tundma","haige"],"He doesn't feel well because he is ill."],
+ ["Hea uni on tervise jaoks väga oluline.","Хороший сон очень важен для здоровья.","B1",["hea","tervis","oluline"],"Good sleep is very important for health."],
+ ["Mu kõht valutab.","У меня болит живот.","B1",["kõht","valu"],"My stomach hurts."],
+ ["Ma kardan, et me ei jõua õigeks ajaks.","Боюсь, что мы не успеем вовремя.","B1",["kartma","jõudma","aeg"],"I'm afraid we won't make it on time."],
+ ["Ära muretse, kõik läheb hästi.","Не волнуйся, всё будет хорошо.","B1",["muretsema","minema"],"Don't worry, everything will be fine."],
+ ["Ma magasin halvasti, sest mul oli palju muret.","Я плохо спал, потому что у меня было много забот.","B1",["magama","mure"],"I slept badly because I had a lot of worries."],
+ ["Ta oli vihane, sest keegi ei usaldanud teda.","Он злился, потому что никто ему не доверял.","B2",["vihane","usaldama"],"He was angry because nobody trusted him."],
+ ["Lapsed on sageli väga uudishimulikud.","Дети часто очень любопытны.","B2",["uudishimulik"],"Children are often very curious."],
+ ["Õpetaja peab olema kannatlik.","Учитель должен быть терпеливым.","B2",["kannatlik"],"A teacher must be patient."],
+ ["Tema rõõm oli suurem kui hirm.","Его радость была сильнее страха.","B1",["rõõm","hirm","suur"],"Her joy was greater than her fear."],
+ ["Ta oli kurb, kui sõber ära kolis.","Ему было грустно, когда друг переехал.","B1",["kurb","sõber"],"He was sad when his friend moved away."],
+ ["Ta häbenes oma viga.","Он стыдился своей ошибки.","B2",["häbenema"],"He was ashamed of his mistake."],
+ ["Valitsus otsustas uue seaduse vastu võtta.","Правительство решило принять новый закон.","B2",["valitsus","otsustama","seadus"],"The government decided to pass a new law."],
+ ["Hinnad on viimastel kuudel kiiresti tõusnud.","Цены в последние месяцы быстро выросли.","B2",["hind","tõusma"],"Prices have risen quickly in recent months."],
+ ["Toidu hind langes kümme protsenti.","Цена на продукты снизилась на десять процентов.","B2",["hind","langema"],"The price of food fell by ten percent."],
+ ["Iga kodanik peaks valimistel osalema.","Каждый гражданин должен участвовать в выборах.","B2",["kodanik","valimised"],"Every citizen should take part in elections."],
+ ["Uuring näitas, et keskkonnaprobleemid mõjutavad kogu ühiskonda.","Исследование показало, что экологические проблемы влияют на всё общество.","B2",["uuring","keskkond","probleem","mõjutama","ühiskond"],"The study showed that environmental problems affect the whole of society."],
+ ["Me arutasime koosolekul mitut võimalikku lahendust.","На совещании мы обсудили несколько возможных решений.","B2",["arutama","koosolek","võimalik","lahendus"],"At the meeting we discussed several possible solutions."],
+ ["Majanduse areng sõltub paljudest teguritest.","Развитие экономики зависит от многих факторов.","B2",["majandus","areng"],"The development of the economy depends on many factors."],
+ ["Kuigi ilm oli halb, läksime siiski metsa.","Хотя погода была плохой, мы всё же пошли в лес.","B2",["kuigi","ilm","siiski","mets","minema"],"Although the weather was bad, we still went to the forest."],
+ ["Ma ei nõustu selle väitega. Vastupidi, minu arvates on see vale.","Я не согласен с этим утверждением. Наоборот, по-моему, оно неверно.","B2",["nõustuma","väide","vastupidi"],"I don't agree with this claim. On the contrary, I think it's wrong."],
+ ["Selle otsuse tagajärjed on tegelikult väga keerulised.","Последствия этого решения на самом деле очень сложные.","B2",["tagajärg","tegelikult","keeruline"],"The consequences of this decision are actually very complicated."],
+ ["Meie eesmärk on vältida samu vigu.","Наша цель — избежать тех же ошибок.","B2",["eesmärk","vältima"],"Our goal is to avoid the same mistakes."],
+ ["Ta selgitas, mida see sõna tähendab.","Она объяснила, что означает это слово.","B2",["selgitama","tähendama"],"She explained what this word means."],
+ ["Juhil on suur vastutus.","У руководителя большая ответственность.","B2",["vastutus","suur"],"A manager has a lot of responsibility."],
+ ["Mis on selle probleemi peamine põhjus?","Какова главная причина этой проблемы?","B2",["põhjus","probleem"],"What is the main reason for this problem?"],
+ ["Vähemalt saavutasime oma eesmärgi.","По крайней мере, мы достигли своей цели.","B2",["vähemalt","saavutama","eesmärk"],"At least we achieved our goal."],
+ ["Ta ei õppinud, järelikult ei sooritanud ta eksamit.","Он не учился, следовательно, не сдал экзамен.","B2",["õppima","järelikult","eksam"],"He didn't study, so consequently he failed the exam."],
+ ["Ma austan sinu arvamust, kuid olen ometi teisel arvamusel.","Я уважаю твоё мнение, но всё же придерживаюсь другого.","B2",["arvamus","ometi"],"I respect your opinion, but I still see it differently."],
+ ["Keeleoskus annab tööturul rohkem võimalusi.","Знание языка даёт больше возможностей на рынке труда.","B2",["oskus","keel","võimalus","töö"],"Language skills give you more opportunities on the job market."],
+ ["Seetõttu on vajalik leida uus lahendus.","Поэтому необходимо найти новое решение.","B2",["seetõttu","vajalik","lahendus"],"That's why it's necessary to find a new solution."],
+ ["Ta väidab, et ei teadnud midagi.","Он утверждает, что ничего не знал.","B2",["väitma"],"He claims that he didn't know anything."]
 ];
 
 // ---------- State ----------
 const INTERVALS = [0, 1, 3, 7, 16, 35]; // days per box (0 = new)
 const BOX_NAMES = ["новые","учу","1 день","3 дня","неделя+"];
-let S = {progress:{}, custom:[], log:{}, dir:"et", sdir:"ru2et", topic:"all", tab:"cards", apiKey:"", model:"claude-opus-5-5", dictCache:{}};
+let S = {progress:{}, custom:[], log:{}, dir:"et", sdir:"ru2et", topic:"all", tab:"cards", apiKey:"", model:"claude-opus-5-5", dictCache:{}, level:"B2", lang:"ru", slow:false, more:""};
 const DAY = 86400000;
 const today = () => new Date().toISOString().slice(0,10);
 try{ const raw = localStorage.getItem("rukkilill"); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
@@ -348,17 +396,33 @@ function persist(){
 }
 try{ navigator.storage?.persist?.(); }catch(e){}
 
-function allWords(){
+// Level and translation language. `ru` on word/sentence objects is the translation in the chosen language.
+const RANK = {A1:0, A2:1, B1:2, B2:3, C1:4};
+const LEVELS = [
+  {id:"A2", name:"Начинающий", note:"A1–A2: первые слова, числа, простые фразы"},
+  {id:"B1", name:"Средний", note:"до B1: быт, работа, город, здоровье"},
+  {id:"B2", name:"Продвинутый", note:"до B2: всё, включая общество и связки"}
+];
+const fitsLevel = lvl => (RANK[lvl] ?? 3) <= RANK[S.level||"B2"];
+const LANGS = {
+  ru:{code:"RU", gen:"русского", acc:"русский", prep:"русском", name:"Русский"},
+  en:{code:"EN", gen:"английского", acc:"английский", prep:"английском", name:"English"}
+};
+const L = () => LANGS[S.lang] || LANGS.ru;
+const isEn = () => S.lang==="en";
+function everyWord(){
   const out = [];
-  for(const t of TOPICS) for(const w of t.words) out.push({et:w[0],ru:w[1],lvl:w[2],forms:w[3],topic:t.id});
-  for(const c of S.custom) out.push(Object.assign({topic:"mine"}, c));
+  for(const t of TOPICS) for(const w of t.words) out.push({et:w[0], ru:isEn()?w[4]:w[1], ruText:w[1], enText:w[4], lvl:w[2], forms:w[3], topic:t.id});
+  for(const c of S.custom) out.push(Object.assign({topic:"mine"}, c, {ru:(isEn()?(c.en||c.ru):(c.ru||c.en)), ruText:c.ru, enText:c.en}));
   return out;
 }
-const byEt = () => Object.fromEntries(allWords().map(w=>[w.et,w]));
-function exampleFor(et){ return SENTENCES.find(s=>s[3].includes(et)); }
+function allWords(){ return everyWord().filter(w=>w.topic==="mine" || fitsLevel(w.lvl)); }
+const byEt = () => Object.fromEntries(everyWord().map(w=>[w.et,w]));
+const sentTr = s => isEn() ? s[4] : s[1];
+function exampleFor(et){ return SENTENCES.find(s=>s[3].includes(et) && fitsLevel(s[2])) || SENTENCES.find(s=>s[3].includes(et)); }
 function boxOf(et){ return S.progress[et]?.box ?? 0; }
 function isDue(et){ const p = S.progress[et]; return !p || p.due <= Date.now(); }
-function learnedCount(){ return Object.values(S.progress).filter(p=>p.box>=2).length; }
+function learnedCount(){ return allWords().filter(w=>(S.progress[w.et]?.box||0)>=2).length; }
 function seenWords(){ return new Set(Object.keys(S.progress)); }
 
 // ---------- Helpers ----------
@@ -368,13 +432,56 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,2200); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 const SPEAK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+// Pronunciation: Neurokõne, the University of Tartu's Estonian speech synthesis (free, CORS-enabled).
+// Audio is kept in Cache Storage so words heard once play offline; the device voice is the fallback.
+const TTS_URL = "https://api.tartunlp.ai/text-to-speech/v2";
+const TTS_VOICE = "mari";
+const AUDIO_CACHE = "rukkilill-audio";
+let actx = null, playing = null, speakSeq = 0;
+function audioCtx(){
+  const C = window.AudioContext || window.webkitAudioContext;
+  if(!actx && C) actx = new C();
+  if(actx && actx.state === "suspended") actx.resume().catch(()=>{});
+  return actx;
+}
+async function ttsAudio(text){
+  const speed = S.slow ? 0.75 : 1;
+  const key = `${TTS_URL}?speaker=${TTS_VOICE}&speed=${speed}&text=${encodeURIComponent(text)}`;
+  let cache = null;
+  try{ cache = await caches.open(AUDIO_CACHE); const hit = await cache.match(key); if(hit) return await hit.arrayBuffer(); }catch(e){}
+  const res = await fetch(TTS_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({text, speaker:TTS_VOICE, speed})});
+  if(!res.ok) throw new Error("tts " + res.status);
+  const buf = await res.arrayBuffer();
+  try{ await cache?.put(key, new Response(buf.slice(0), {headers:{"Content-Type":"audio/wav"}})); }catch(e){}
+  return buf;
+}
 let etVoice = null;
 function pickVoice(){ try{ etVoice = speechSynthesis.getVoices().find(v=>/^et/i.test(v.lang)) || null; }catch(e){} }
 try{ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }catch(e){}
-function speak(text){
-  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang="et-EE"; if(etVoice) u.voice=etVoice; u.rate=.9; speechSynthesis.speak(u);
-    if(!etVoice) toast("Эстонский голос не найден на устройстве — звучание может быть неточным"); }
-  catch(e){ toast("Озвучка недоступна на этом устройстве"); }
+function deviceSpeak(text){
+  try{ const u = new SpeechSynthesisUtterance(text); u.lang="et-EE"; if(etVoice) u.voice=etVoice; u.rate = S.slow ? .7 : .9; speechSynthesis.speak(u); }catch(e){}
+}
+// Call from a tap: the audio context must be unlocked inside the gesture (iPhone).
+async function speak(text){
+  const ctx = audioCtx();
+  const seq = ++speakSeq;
+  try{ playing?.stop(); }catch(e){}
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const slowNote = setTimeout(()=>{ if(seq===speakSeq) toast("Загружаю озвучку…"); }, 700);
+  try{
+    if(!ctx) throw new Error("no audio");
+    const buf = await ttsAudio(text);
+    const audio = await ctx.decodeAudioData(buf);
+    clearTimeout(slowNote);
+    if(seq !== speakSeq) return;
+    const src = ctx.createBufferSource(); src.buffer = audio; src.connect(ctx.destination); src.start(); playing = src;
+    $("#toast").hidden = true;
+  }catch(e){
+    clearTimeout(slowNote);
+    if(seq !== speakSeq) return;
+    if(etVoice) deviceSpeak(text);
+    else toast(navigator.onLine===false ? "Для новой озвучки нужен интернет. Уже прослушанные слова работают без него." : "Не получилось загрузить озвучку. Попробуйте ещё раз.");
+  }
 }
 function normalize(s){ return s.toLowerCase().replace(/[.,!?;:«»"'—–-]/g," ").replace(/ё/g,"е").replace(/\s+/g," ").trim(); }
 
@@ -435,8 +542,8 @@ const CLAUDE_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
 function claudeLink(label, prompt, cls="primary"){
   return h(`<a class="btn ${cls}" href="${esc(claudeUrl(prompt))}" target="_blank" rel="noopener">${CLAUDE_ICON} ${esc(label)}</a>`);
 }
-const dictPrompt = q => `Ты эстонско-русский словарь. Я учу эстонский до уровня B2. Слово или фраза: «${q}».
-Дай: начальную форму на эстонском, перевод на русский, часть речи, основные формы (для существительных: omastav, osastav, мн. ч. osastav; для глаголов: ma-инфинитив, da-инфинитив, наст. вр. «ma», прош. вр. «ma»), 2 коротких примера с переводом. Коротко, без лишнего текста.`;
+const dictPrompt = q => `Ты эстонско-${isEn()?"английский":"русский"} словарь. Я учу эстонский до уровня ${S.level}, объясняй по-русски. Слово или фраза: «${q}».
+Дай: начальную форму на эстонском, перевод на ${L().acc}, часть речи, основные формы (для существительных: omastav, osastav, мн. ч. osastav; для глаголов: ma-инфинитив, da-инфинитив, наст. вр. «ma», прош. вр. «ma»), 2 коротких примера с переводом. Коротко, без лишнего текста.`;
 function connectHint(text){
   return h(`<p class="note">${esc(text)}</p>`);
 }
@@ -444,18 +551,30 @@ function connectHint(text){
 // ---------- Tabs ----------
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; persist(); render(); window.scrollTo(0,0); });
 function render(){
+  if(S.tab==="settings"){ S.tab="more"; S.more="settings"; }
   document.querySelectorAll("nav.tabs button").forEach(b=>{ if(b.dataset.tab===S.tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
-  for(const id of ["cards","sent","chat","dict","settings"]) $("#v-"+id).hidden = S.tab!==id;
+  for(const id of ["cards","sent","chat","dict","more"]) $("#v-"+id).hidden = S.tab!==id;
   updateStat();
   if(S.tab==="cards") renderCards();
   if(S.tab==="sent") renderSent();
   if(S.tab==="chat") renderChat();
   if(S.tab==="dict") renderDict();
-  if(S.tab==="settings") renderSettings();
+  if(S.tab==="more") renderMore();
 }
 
 // ---------- Cards ----------
 let queue = [], cur = null, flipped = false;
+function levelRange(){ return {A2:"A1–A2", B1:"A2–B1", B2:"B1–B2"}[S.level] || "B1–B2"; }
+function setLevel(id){ S.level = id; S.levelChosen = true; if(S.topic!=="all" && !allWords().some(w=>w.topic===S.topic)) S.topic="all"; queue=[]; cur=null; sentCur=null; chat=null; persist(); render(); }
+function levelPicker(){
+  const p = h(`<div class="panel"><div class="label">С чего начнём?</div><div>Выберите уровень. Его можно поменять в любой момент в разделе «Ещё».</div><div class="levels"></div></div>`);
+  for(const l of LEVELS){
+    const b = h(`<button class="btn ghost level-btn"><b>${esc(l.name)}</b><span class="note">${esc(l.note)}</span></button>`);
+    b.onclick = ()=>setLevel(l.id);
+    $(".levels",p).append(b);
+  }
+  return p;
+}
 function deckWords(){
   const all = allWords();
   return S.topic==="all" ? all : all.filter(w=>w.topic===S.topic);
@@ -470,17 +589,19 @@ function renderCards(){
   const v = $("#v-cards"); v.innerHTML = "";
   const topics = [{id:"all",name:"Все"}, ...TOPICS, ...(S.custom.length?[{id:"mine",name:"Мои слова"}]:[])];
   const all = allWords();
-  v.append(h(`<div><h2>Карточки</h2><p class="sub">Слова от A2 до B2. Вспомнили слово — оно вернётся через несколько дней. Не вспомнили — повторим его ещё раз сегодня.</p></div>`));
+  if(!S.levelChosen) v.append(levelPicker());
+  v.append(h(`<div><h2>Карточки</h2><p class="sub">Уровень: ${esc((LEVELS.find(l=>l.id===S.level)?.name||"").toLowerCase())}. Вспомнили слово — оно вернётся через несколько дней. Не вспомнили — повторим его ещё раз сегодня.</p></div>`));
   const chips = h(`<div class="chips" role="group" aria-label="Тема"></div>`);
   for(const t of topics){
     const ws = t.id==="all"?all:all.filter(w=>w.topic===t.id);
+    if(!ws.length) continue;
     const due = ws.filter(w=>isDue(w.et)).length;
     const c = h(`<button class="chip" aria-pressed="${S.topic===t.id}">${esc(t.name)} <small>${due}</small></button>`);
     c.onclick=()=>{ S.topic=t.id; persist(); queue=[]; cur=null; renderCards(); };
     chips.append(c);
   }
   v.append(chips);
-  const seg = h(`<div class="seg" role="group" aria-label="Сторона карточки"><button aria-pressed="${S.dir==="et"}">ET → RU</button><button aria-pressed="${S.dir==="ru"}">RU → ET</button></div>`);
+  const seg = h(`<div class="seg" role="group" aria-label="Сторона карточки"><button aria-pressed="${S.dir==="et"}">ET → ${L().code}</button><button aria-pressed="${S.dir==="ru"}">${L().code} → ET</button></div>`);
   seg.children[0].onclick=()=>{S.dir="et";persist();renderCards();};
   seg.children[1].onclick=()=>{S.dir="ru";persist();renderCards();};
   v.append(seg);
@@ -500,7 +621,7 @@ function renderCards(){
       ? `<div class="trans">${esc(w.ru)}</div><div class="word" lang="et" style="font-size:20px;margin:0;color:var(--muted)">${esc(w.et)}</div>`
       : `<div class="trans" lang="et">${esc(w.et)}</div><div class="forms">${esc(w.ru)}</div>`;
     const forms = w.forms ? `<div class="forms">Формы: <b lang="et">${esc(w.forms)}</b></div>` : "";
-    const exHtml = ex ? `<div class="ex"><div lang="et">${esc(ex[0])}</div><div class="ru">${esc(ex[1])}</div></div>` : (w.example ? `<div class="ex"><div lang="et">${esc(w.example)}</div></div>`:"");
+    const exHtml = ex ? `<div class="ex"><div lang="et">${esc(ex[0])}</div><div class="ru">${esc(sentTr(ex))}</div></div>` : (w.example ? `<div class="ex"><div lang="et">${esc(w.example)}</div></div>`:"");
     const meta = `<div class="meta"><span class="lvl">${esc(w.lvl||"B2")}</span><span class="box">${BOX_NAMES[Math.min(boxOf(w.et),4)]} · осталось ${queue.length+1}</span></div>`;
     const stage = h(`<div class="card-stage"><button class="fcard ${flipped?"flipped":""}" aria-label="Перевернуть карточку">
       <div class="face front">${meta}${front}<div class="hint">Нажмите, чтобы перевернуть</div></div>
@@ -535,14 +656,15 @@ function grade(ok){
 let sentCur = null, sentAnswer = "", sentResult = null, sentBusy = false, sentCtl = null;
 function pickSentence(){
   const seen = seenWords();
-  let pool = SENTENCES.filter(s=>s[3].some(w=>seen.has(w)));
-  if(pool.length < 3) pool = SENTENCES.filter(s=>s[2]!=="B2");
+  const levelled = SENTENCES.filter(s=>fitsLevel(s[2]));
+  let pool = levelled.filter(s=>s[3].some(w=>seen.has(w)));
+  if(pool.length < 3) pool = levelled;
   // prefer sentences where most words are already studied
   pool = pool.map(s=>({s, score:s[3].filter(w=>seen.has(w)).length/s[3].length + Math.random()*.6}))
     .sort((a,b)=>b.score-a.score).slice(0,12).map(x=>x.s);
   let s = pool[Math.floor(Math.random()*pool.length)];
   if(sentCur && s===sentCur.raw && pool.length>1) s = pool.find(x=>x!==s);
-  sentCur = {et:s[0], ru:s[1], lvl:s[2], words:s[3], raw:s};
+  sentCur = {et:s[0], ru:sentTr(s), lvl:s[2], words:s[3], raw:s};
   sentAnswer = ""; sentResult = null;
 }
 function renderSent(){
@@ -550,7 +672,7 @@ function renderSent(){
   if(!sentCur) pickSentence();
   const seen = seenWords();
   v.append(h(`<div><h2>Переведите предложение</h2><p class="sub">${seen.size ? "Предложения собраны из слов, которые вы уже открывали в карточках." : "Пройдите несколько карточек — и предложения начнут подбираться под ваши слова."}</p></div>`));
-  const seg = h(`<div class="seg" role="group" aria-label="Направление"><button aria-pressed="${S.sdir==="ru2et"}">RU → ET</button><button aria-pressed="${S.sdir==="et2ru"}">ET → RU</button></div>`);
+  const seg = h(`<div class="seg" role="group" aria-label="Направление"><button aria-pressed="${S.sdir==="ru2et"}">${L().code} → ET</button><button aria-pressed="${S.sdir==="et2ru"}">ET → ${L().code}</button></div>`);
   seg.children[0].onclick=()=>{S.sdir="ru2et";sentResult=null;sentAnswer="";persist();renderSent();};
   seg.children[1].onclick=()=>{S.sdir="et2ru";sentResult=null;sentAnswer="";persist();renderSent();};
   v.append(seg);
@@ -562,7 +684,7 @@ function renderSent(){
     <div class="spread"><span class="lvl">${esc(sentCur.lvl)}${sentCur.gen?" · от Claude":""}</span>${toEt?"":`<button class="icon-btn" aria-label="Произнести">${SPEAK_ICON}</button>`}</div>
     <div class="prompt" ${toEt?"":'lang="et"'}>${esc(src)}</div>
     <div class="tags">${sentCur.words.map(w=>`<span class="tag" lang="et">${esc(w)}${wordsMap[w]?" — "+esc(wordsMap[w].ru):""}</span>`).join("")}</div>
-    <label class="label" for="answer">${toEt?"Ваш перевод на эстонский":"Ваш перевод на русский"}</label>
+    <label class="label" for="answer">${toEt?"Ваш перевод на эстонский":"Ваш перевод на "+L().acc}</label>
     <textarea id="answer" ${toEt?'lang="et" autocapitalize="sentences"':""} placeholder="${toEt?"Kirjuta siia…":"Напишите здесь…"}"></textarea>
     <div class="row" id="sent-act"></div>
     <div id="sent-res"></div>
@@ -589,7 +711,7 @@ function renderSent(){
   else {
     const words = shuffle([...seenWords()]).slice(0,8);
     const list = words.length>=3 ? words.join(", ") : "любые слова уровня B1–B2";
-    v.append(claudeLink("Тренироваться с Claude", `Я учу эстонский до уровня B2, мой родной язык русский. Дай мне по одному предложению на русском для перевода на эстонский (уровень B1–B2, 8–14 слов), используя слова: ${list}. После каждого моего перевода проверь его, коротко объясни ошибки (падежи, спряжение, порядок слов) и дай следующее предложение.`, "ghost"));
+    v.append(claudeLink("Тренироваться с Claude", `Я учу эстонский до уровня B2, мой родной язык русский. Дай мне по одному предложению на ${L().prep} для перевода на эстонский (уровень ${levelRange()}, 6–14 слов), используя слова: ${list}. После каждого моего перевода проверь его, коротко объясни ошибки (падежи, спряжение, порядок слов) и дай следующее предложение.`, "ghost"));
     v.append(connectHint("Без ключа API перевод сравнивается с эталоном. Кнопка «Разобрать в Claude» под результатом откроет Claude, и он проверит твой вариант. Это входит в твою подписку, доплачивать не нужно."));
   }
 }
@@ -610,7 +732,7 @@ function drawSentResult(panel){
   if(r.offline){
     el.append(h(`<div class="note">Это сравнение с эталоном. Твой вариант может быть правильным, даже если он отличается.</div>`));
     const src = toEt ? sentCur.ru : sentCur.et;
-    el.append(claudeLink("Разобрать в Claude", `Я учу эстонский до уровня B2, мой родной язык русский. Проверь мой перевод с ${toEt?"русского на эстонский":"эстонского на русский"}.
+    el.append(claudeLink("Разобрать в Claude", `Я учу эстонский до уровня ${S.level}, мой родной язык русский. Проверь мой перевод с ${toEt?L().gen+" на эстонский":"эстонского на "+L().acc}.
 Исходное предложение: «${src}»
 Мой перевод: «${sentAnswer.trim()}»
 Эталон: «${ref}»
@@ -634,12 +756,12 @@ async function checkSentence(panel){
   sentBusy = true; sentResult = {busy:true}; drawSentResult(panel);
   sentCtl = new AbortController();
   const prompt = `Ты преподаватель эстонского языка, ученик-русскоязычный готовится к уровню B2.
-Задание: перевести с ${toEt?"русского на эстонский":"эстонского на русский"}.
+Задание: перевести с ${toEt?L().gen+" на эстонский":"эстонского на "+L().acc}.
 Исходное предложение: "${src}"
 Эталонный перевод: "${ref}"
 Ответ ученика: "${ans}"
 Оцени ответ ученика. Принимай любой грамматически правильный перевод с тем же смыслом, даже если он отличается от эталона. Мелкие опечатки и пропущенные знаки над буквами (õ ä ö ü) — "almost". Объясни ошибки кратко по-русски (падежи, спряжение, порядок слов, лексика), максимум 3 предложения.
-Верни verdict (correct/almost/wrong), score от 0 до 100, feedback и corrected — исправленный вариант ответа ученика на ${toEt?"эстонском":"русском"} (если ошибок нет, повтори ответ ученика).`;
+Верни verdict (correct/almost/wrong), score от 0 до 100, feedback и corrected — исправленный вариант ответа ученика на ${toEt?"эстонском":L().prep} (если ошибок нет, повтори ответ ученика).`;
   try{
     const r = await sample.json(prompt, {schema:SCHEMA_GRADE, signal:sentCtl.signal});
     sentResult = {verdict:["correct","almost","wrong"].includes(r?.verdict)?r.verdict:"almost", score:Number.isFinite(+r?.score)?Math.round(+r.score):null, feedback:String(r?.feedback||""), corrected:String(r?.corrected||"")};
@@ -657,10 +779,10 @@ async function generateSentence(btn){
   const picks = shuffle(pool.slice()).slice(0,3);
   btn.disabled = true; btn.textContent = "Claude пишет…";
   try{
-    const r = await sample.json(`Составь одно естественное предложение на эстонском языке уровня B1–B2 (8–16 слов), используя слова: ${picks.join(", ")} (в любой нужной грамматической форме; можно использовать 2 из 3, если иначе выходит неестественно). Предложение должно быть грамматически безупречным, на повседневную или общественную тему. Дай точный перевод на русский.
+    const r = await sample.json(`Составь одно естественное предложение на эстонском языке уровня ${levelRange()} (${S.level==="A2"?"4–8":"8–16"} слов), используя слова: ${picks.join(", ")} (в любой нужной грамматической форме; можно использовать 2 из 3, если иначе выходит неестественно). Предложение должно быть грамматически безупречным, на повседневную или общественную тему. Дай точный перевод на ${L().acc} (поле ru).
 В поле words перечисли использованные слова из списка в начальной форме.`, {schema:SCHEMA_GEN});
     if(r?.et && r?.ru){
-      sentCur = {et:String(r.et), ru:String(r.ru), lvl:"B2", words:Array.isArray(r.words)&&r.words.length?r.words.map(String):picks, gen:true};
+      sentCur = {et:String(r.et), ru:String(r.ru), lvl:S.level, words:Array.isArray(r.words)&&r.words.length?r.words.map(String):picks, gen:true};
       sentAnswer=""; sentResult=null;
     }
   }catch(e){ const m=sampleErr(e); if(m) toast(m); }
@@ -670,58 +792,66 @@ async function generateSentence(btn){
 // ---------- Chat ----------
 // Each situation: who writes, their role, level, the first message, a hint and two sample replies [et, ru].
 const CHATS = [
- {who:"Kati", role:"подруга", lvl:"A2", et:"Tere! Kas sa tahad täna õhtul kinno tulla?", ru:"Привет! Хочешь сегодня вечером пойти в кино?", hint:"Согласись или вежливо откажись.",
-  samples:[["Jah, hea meelega! Mis kell film algab?","Да, с удовольствием! Во сколько начинается фильм?"],["Kahjuks ei saa, mul on täna palju tööd.","К сожалению, не могу, у меня сегодня много работы."]]},
- {who:"Jaan", role:"друг", lvl:"A2", et:"Kuidas sul läheb?", ru:"Как у тебя дела?", hint:"Расскажи, как дела, и спроси в ответ.",
-  samples:[["Hästi, aitäh! Aga sul?","Хорошо, спасибо! А у тебя?"],["Nii ja naa, olen natuke väsinud.","Так себе, немного устал."]]},
- {who:"Jaan", role:"друг", lvl:"A2", et:"Mida sa nädalavahetusel tegid?", ru:"Что ты делал на выходных?", hint:"Расскажи, чем занимался.",
-  samples:[["Käisin sõpradega metsas matkamas.","Ходил с друзьями в поход в лес."],["Olin kodus ja puhkasin.","Был дома и отдыхал."]]},
- {who:"Naaber", role:"соседка", lvl:"A2", et:"Tere! Kas teil oleks natuke suhkrut laenata?", ru:"Здравствуйте! Не одолжите немного сахара?", hint:"Помоги соседке или извинись.",
-  samples:[["Muidugi, oodake hetk.","Конечно, подождите минутку."],["Vabandust, mul endalgi pole enam.","Извините, у меня самого уже нет."]]},
- {who:"Müüja", role:"продавец в магазине", lvl:"A2", et:"Tere! Kas saan teid aidata?", ru:"Здравствуйте! Могу вам помочь?", hint:"Скажи, что ищешь, или что просто смотришь.",
-  samples:[["Jah, palun. Ma otsin talvejopet.","Да, пожалуйста. Я ищу зимнюю куртку."],["Aitäh, ma lihtsalt vaatan.","Спасибо, я просто смотрю."]]},
- {who:"Kelner", role:"официант", lvl:"A2", et:"Mida te soovite juua?", ru:"Что желаете выпить?", hint:"Закажи напиток.",
-  samples:[["Klaas vett ja üks kohv, palun.","Стакан воды и один кофе, пожалуйста."],["Ma võtaksin tassi teed.","Я бы взял чашку чая."]]},
- {who:"Möödakäija", role:"прохожий", lvl:"A2", et:"Vabandage, kas te teate, kus on raudteejaam?", ru:"Извините, вы не знаете, где вокзал?", hint:"Объясни дорогу или скажи, что не знаешь.",
-  samples:[["Jah, minge otse ja siis vasakule.","Да, идите прямо, а потом налево."],["Vabandust, ma pole siit pärit.","Извините, я не местный."]]},
- {who:"Kati", role:"подруга", lvl:"A2", et:"Palju õnne sünnipäevaks! Kuidas sa tähistad?", ru:"С днём рождения! Как будешь отмечать?", hint:"Поблагодари и расскажи о планах.",
-  samples:[["Aitäh! Kutsun õhtul mõned sõbrad külla.","Спасибо! Вечером позову в гости пару друзей."],["Suur aitäh! Lähen perega restorani.","Большое спасибо! Пойду с семьёй в ресторан."]]},
- {who:"Marko", role:"коллега", lvl:"B1", et:"Kas sa saaksid homme kell kümme koosolekule tulla?", ru:"Сможешь завтра в десять прийти на совещание?", hint:"Согласись или предложи другое время.",
-  samples:[["Jah, kell kümme sobib mulle hästi.","Да, в десять мне подходит."],["Kell kümme ma ei saa, kas kell üksteist sobiks?","В десять не могу, подойдёт ли в одиннадцать?"]]},
- {who:"Ülemus", role:"начальник", lvl:"B1", et:"Kas sa jõuaksid aruande reedeks valmis teha?", ru:"Успеешь подготовить отчёт к пятнице?", hint:"Пообещай или договорись о другом сроке.",
-  samples:[["Jah, see peaks reedeks valmis olema.","Да, к пятнице он должен быть готов."],["Reedeks on keeruline, aga esmaspäevaks kindlasti.","К пятнице сложно, но к понедельнику точно."]]},
- {who:"Perearstikeskus", role:"регистратура семейного врача", lvl:"B1", et:"Perearstikeskus, tere. Mis teid vaevab?", ru:"Центр семейных врачей, здравствуйте. Что вас беспокоит?", hint:"Опиши, что болит, или попроси записать к врачу.",
-  samples:[["Tere. Mul on juba kolm päeva palavik ja kurk valutab.","Здравствуйте. У меня уже три дня температура и болит горло."],["Tere. Ma sooviksin aega perearsti juurde.","Здравствуйте. Я хотел бы записаться к семейному врачу."]]},
- {who:"Apteeker", role:"фармацевт", lvl:"B1", et:"Kas teil on retsept?", ru:"У вас есть рецепт?", hint:"Скажи про рецепт или спроси лекарство без рецепта.",
-  samples:[["Jah, digiretsept peaks minu isikukoodi peal olema.","Да, электронный рецепт должен быть на моём личном коде."],["Ei ole. Kas teil on midagi peavalu vastu, mida saab ilma retseptita osta?","Нет. Есть у вас что-нибудь от головной боли, что можно купить без рецепта?"]]},
- {who:"Üürileandja", role:"хозяин квартиры", lvl:"B1", et:"Tere! Korter on veel vaba. Kas te soovite seda laupäeval vaatama tulla?", ru:"Здравствуйте! Квартира ещё свободна. Хотите прийти посмотреть её в субботу?", hint:"Договорись о времени просмотра.",
-  samples:[["Jah, laupäev sobib mulle. Mis kell?","Да, суббота мне подходит. Во сколько?"],["Laupäeval ma kahjuks ei saa. Kas pühapäeval oleks võimalik?","В субботу, к сожалению, не могу. А в воскресенье можно?"]]},
- {who:"Naaber", role:"сосед", lvl:"B1", et:"Kas teie muusika võiks õhtuti natuke vaiksem olla?", ru:"Не могли бы вы по вечерам делать музыку потише?", hint:"Извинись и пообещай.",
-  samples:[["Vabandust, ma ei teadnud, et see segab. Panen vaiksemaks.","Извините, я не знал, что это мешает. Сделаю потише."],["Muidugi, vabandan väga.","Конечно, очень извиняюсь."]]},
- {who:"Kati", role:"подруга", lvl:"B1", et:"Kas sa tahaksid suvel koos Tartusse sõita?", ru:"Хочешь летом вместе съездить в Тарту?", hint:"Ответь и уточни детали.",
-  samples:[["Väga hea mõte! Millal sa sõita tahaksid?","Отличная идея! Когда ты хочешь поехать?"],["Tahaksin küll, aga suvel ma töötan.","Хотел бы, но летом я работаю."]]},
- {who:"Õpetaja", role:"преподаватель курсов", lvl:"B1", et:"Miks sa otsustasid eesti keelt õppida?", ru:"Почему ты решил учить эстонский?", hint:"Объясни свою причину.",
-  samples:[["Ma elan Eestis ja tahan kohalikega eesti keeles rääkida.","Я живу в Эстонии и хочу говорить с местными по-эстонски."],["Mul on seda tööks vaja.","Мне это нужно для работы."]]},
- {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Rääkige palun natuke oma töökogemusest.", ru:"Расскажите, пожалуйста, немного о своём опыте работы.", hint:"Кратко расскажи об опыте.",
-  samples:[["Olen viis aastat töötanud müügijuhina ühes suures ettevõttes.","Я пять лет работал менеджером по продажам в одной большой компании."],["Pärast ülikooli lõpetamist töötasin kaks aastat IT-firmas.","После окончания университета я два года работал в IT-фирме."]]},
- {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Miks te soovite just meie ettevõttes töötada?", ru:"Почему вы хотите работать именно в нашей компании?", hint:"Назови свои причины.",
-  samples:[["Teie ettevõte areneb kiiresti ja mulle meeldivad teie väärtused.","Ваша компания быстро развивается, и мне нравятся ваши ценности."],["Tahan saada uusi kogemusi ja teie valdkond huvitab mind väga.","Я хочу получить новый опыт, и ваша сфера меня очень интересует."]]},
- {who:"Marko", role:"коллега", lvl:"B2", et:"Mis sa arvad, kas kaugtöö on parem kui kontoris töötamine?", ru:"Как думаешь, удалённая работа лучше, чем работа в офисе?", hint:"Вырази мнение и объясни его.",
-  samples:[["Minu arvates on kaugtöö mugavam, aga kolleegidega suhtlemisest jääb puudu.","По-моему, удалёнка удобнее, но не хватает общения с коллегами."],["Ma eelistan kontorit, sest seal on lihtsam keskenduda.","Я предпочитаю офис, потому что там проще сосредоточиться."]]},
- {who:"Jaan", role:"друг", lvl:"B2", et:"Kuulsin, et elektri hind tõuseb jälle. Mis sa sellest arvad?", ru:"Слышал, что цена на электричество опять растёт. Что ты об этом думаешь?", hint:"Вырази своё мнение.",
-  samples:[["See on tõsine probleem, eriti talvel. Peame rohkem kokku hoidma.","Это серьёзная проблема, особенно зимой. Придётся больше экономить."],["Kahjuks mõjutab see kõiki. Valitsus peaks midagi ette võtma.","К сожалению, это касается всех. Правительству стоит что-то предпринять."]]},
- {who:"Kati", role:"подруга", lvl:"B2", et:"Kas sa oled kunagi Eesti saartel käinud?", ru:"Ты когда-нибудь бывал на эстонских островах?", hint:"Расскажи о своём опыте или планах.",
-  samples:[["Jah, käisin eelmisel suvel Saaremaal ja seal oli imeline.","Да, прошлым летом я был на Сааремаа, и там было чудесно."],["Ei ole veel, aga tahaksin väga Hiiumaale minna.","Ещё нет, но очень хотел бы съездить на Хийумаа."]]},
- {who:"Marko", role:"коллега", lvl:"B2", et:"Kas sa oleksid nõus mind järgmisel nädalal projektiga aitama?", ru:"Ты бы согласился помочь мне с проектом на следующей неделе?", hint:"Согласись с условием или откажись.",
-  samples:[["Olen nõus, kui mul endal kiireid tähtaegu ei ole.","Соглашусь, если у меня самого не будет срочных дедлайнов."],["Hea meelega, räägime homme täpsemalt.","С удовольствием, завтра обсудим подробнее."]]}
+ {who:"Liisa", role:"новая знакомая", lvl:"A1", et:"Tere! Mis su nimi on?", ru:"Привет! Как тебя зовут?", en:"Hi! What's your name?", hint:"Назови своё имя и спроси в ответ.",
+  samples:[["Tere! Minu nimi on Anna.","Привет! Меня зовут Анна.","Hi! My name is Anna."],["Mina olen Andrei. Aga sina?","Я Андрей. А ты?","I'm Andrei. And you?"]]},
+ {who:"Liisa", role:"новая знакомая", lvl:"A1", et:"Kust sa pärit oled?", ru:"Откуда ты родом?", en:"Where are you from?", hint:"Скажи, откуда ты.",
+  samples:[["Ma olen pärit Narvast.","Я родом из Нарвы.","I'm from Narva."],["Ma olen pärit Lätist, aga elan Tallinnas.","Я из Латвии, но живу в Таллине.","I'm from Latvia, but I live in Tallinn."]]},
+ {who:"Liisa", role:"новая знакомая", lvl:"A1", et:"Kui vana sa oled?", ru:"Сколько тебе лет?", en:"How old are you?", hint:"Назови свой возраст.",
+  samples:[["Ma olen kakskümmend viis aastat vana.","Мне двадцать пять лет.","I'm twenty-five years old."],["Ma olen kolmkümmend aastat vana.","Мне тридцать лет.","I'm thirty years old."]]},
+ {who:"Kassapidaja", role:"кассир в магазине", lvl:"A1", et:"Tere! Kas soovite kotti?", ru:"Здравствуйте! Пакет нужен?", en:"Hello! Would you like a bag?", hint:"Ответь да или нет вежливо.",
+  samples:[["Jah, palun.","Да, пожалуйста.","Yes, please."],["Ei, aitäh.","Нет, спасибо.","No, thank you."]]},
+ {who:"Kati", role:"подруга", lvl:"A2", et:"Tere! Kas sa tahad täna õhtul kinno tulla?", ru:"Привет! Хочешь сегодня вечером пойти в кино?", en:"Hi! Do you want to come to the cinema tonight?", hint:"Согласись или вежливо откажись.",
+  samples:[["Jah, hea meelega! Mis kell film algab?","Да, с удовольствием! Во сколько начинается фильм?","Yes, I'd love to! What time does the film start?"],["Kahjuks ei saa, mul on täna palju tööd.","К сожалению, не могу, у меня сегодня много работы.","Unfortunately I can't, I have a lot of work today."]]},
+ {who:"Jaan", role:"друг", lvl:"A2", et:"Kuidas sul läheb?", ru:"Как у тебя дела?", en:"How are you?", hint:"Расскажи, как дела, и спроси в ответ.",
+  samples:[["Hästi, aitäh! Aga sul?","Хорошо, спасибо! А у тебя?","Fine, thanks! And you?"],["Nii ja naa, olen natuke väsinud.","Так себе, немного устал.","So-so, I'm a bit tired."]]},
+ {who:"Jaan", role:"друг", lvl:"A2", et:"Mida sa nädalavahetusel tegid?", ru:"Что ты делал на выходных?", en:"What did you do at the weekend?", hint:"Расскажи, чем занимался.",
+  samples:[["Käisin sõpradega metsas matkamas.","Ходил с друзьями в поход в лес.","I went hiking in the forest with friends."],["Olin kodus ja puhkasin.","Был дома и отдыхал.","I stayed at home and rested."]]},
+ {who:"Naaber", role:"соседка", lvl:"A2", et:"Tere! Kas teil oleks natuke suhkrut laenata?", ru:"Здравствуйте! Не одолжите немного сахара?", en:"Hello! Could you lend me a little sugar?", hint:"Помоги соседке или извинись.",
+  samples:[["Muidugi, oodake hetk.","Конечно, подождите минутку.","Of course, wait a moment."],["Vabandust, mul endalgi pole enam.","Извините, у меня самого уже нет.","Sorry, I don't have any left myself."]]},
+ {who:"Müüja", role:"продавец в магазине", lvl:"A2", et:"Tere! Kas saan teid aidata?", ru:"Здравствуйте! Могу вам помочь?", en:"Hello! Can I help you?", hint:"Скажи, что ищешь, или что просто смотришь.",
+  samples:[["Jah, palun. Ma otsin talvejopet.","Да, пожалуйста. Я ищу зимнюю куртку.","Yes, please. I'm looking for a winter jacket."],["Aitäh, ma lihtsalt vaatan.","Спасибо, я просто смотрю.","Thanks, I'm just looking."]]},
+ {who:"Kelner", role:"официант", lvl:"A2", et:"Mida te soovite juua?", ru:"Что желаете выпить?", en:"What would you like to drink?", hint:"Закажи напиток.",
+  samples:[["Klaas vett ja üks kohv, palun.","Стакан воды и один кофе, пожалуйста.","A glass of water and a coffee, please."],["Ma võtaksin tassi teed.","Я бы взял чашку чая.","I'd have a cup of tea."]]},
+ {who:"Möödakäija", role:"прохожий", lvl:"A2", et:"Vabandage, kas te teate, kus on raudteejaam?", ru:"Извините, вы не знаете, где вокзал?", en:"Excuse me, do you know where the railway station is?", hint:"Объясни дорогу или скажи, что не знаешь.",
+  samples:[["Jah, minge otse ja siis vasakule.","Да, идите прямо, а потом налево.","Yes, go straight and then left."],["Vabandust, ma pole siit pärit.","Извините, я не местный.","Sorry, I'm not from here."]]},
+ {who:"Kati", role:"подруга", lvl:"A2", et:"Palju õnne sünnipäevaks! Kuidas sa tähistad?", ru:"С днём рождения! Как будешь отмечать?", en:"Happy birthday! How are you celebrating?", hint:"Поблагодари и расскажи о планах.",
+  samples:[["Aitäh! Kutsun õhtul mõned sõbrad külla.","Спасибо! Вечером позову в гости пару друзей.","Thanks! I'm inviting a few friends over tonight."],["Suur aitäh! Lähen perega restorani.","Большое спасибо! Пойду с семьёй в ресторан.","Thank you so much! I'm going to a restaurant with my family."]]},
+ {who:"Marko", role:"коллега", lvl:"B1", et:"Kas sa saaksid homme kell kümme koosolekule tulla?", ru:"Сможешь завтра в десять прийти на совещание?", en:"Could you come to the meeting tomorrow at ten?", hint:"Согласись или предложи другое время.",
+  samples:[["Jah, kell kümme sobib mulle hästi.","Да, в десять мне подходит.","Yes, ten o'clock suits me fine."],["Kell kümme ma ei saa, kas kell üksteist sobiks?","В десять не могу, подойдёт ли в одиннадцать?","I can't at ten, would eleven work?"]]},
+ {who:"Ülemus", role:"начальник", lvl:"B1", et:"Kas sa jõuaksid aruande reedeks valmis teha?", ru:"Успеешь подготовить отчёт к пятнице?", en:"Could you get the report done by Friday?", hint:"Пообещай или договорись о другом сроке.",
+  samples:[["Jah, see peaks reedeks valmis olema.","Да, к пятнице он должен быть готов.","Yes, it should be ready by Friday."],["Reedeks on keeruline, aga esmaspäevaks kindlasti.","К пятнице сложно, но к понедельнику точно.","Friday is difficult, but definitely by Monday."]]},
+ {who:"Perearstikeskus", role:"регистратура семейного врача", lvl:"B1", et:"Perearstikeskus, tere. Mis teid vaevab?", ru:"Центр семейных врачей, здравствуйте. Что вас беспокоит?", en:"Family health centre, hello. What's bothering you?", hint:"Опиши, что болит, или попроси записать к врачу.",
+  samples:[["Tere. Mul on juba kolm päeva palavik ja kurk valutab.","Здравствуйте. У меня уже три дня температура и болит горло.","Hello. I've had a fever for three days and my throat hurts."],["Tere. Ma sooviksin aega perearsti juurde.","Здравствуйте. Я хотел бы записаться к семейному врачу.","Hello. I'd like an appointment with the family doctor."]]},
+ {who:"Apteeker", role:"фармацевт", lvl:"B1", et:"Kas teil on retsept?", ru:"У вас есть рецепт?", en:"Do you have a prescription?", hint:"Скажи про рецепт или спроси лекарство без рецепта.",
+  samples:[["Jah, digiretsept peaks minu isikukoodi peal olema.","Да, электронный рецепт должен быть на моём личном коде.","Yes, the e-prescription should be under my personal ID code."],["Ei ole. Kas teil on midagi peavalu vastu, mida saab ilma retseptita osta?","Нет. Есть у вас что-нибудь от головной боли, что можно купить без рецепта?","No. Do you have anything for a headache that I can buy without a prescription?"]]},
+ {who:"Üürileandja", role:"хозяин квартиры", lvl:"B1", et:"Tere! Korter on veel vaba. Kas te soovite seda laupäeval vaatama tulla?", ru:"Здравствуйте! Квартира ещё свободна. Хотите прийти посмотреть её в субботу?", en:"Hello! The apartment is still available. Would you like to come and see it on Saturday?", hint:"Договорись о времени просмотра.",
+  samples:[["Jah, laupäev sobib mulle. Mis kell?","Да, суббота мне подходит. Во сколько?","Yes, Saturday suits me. What time?"],["Laupäeval ma kahjuks ei saa. Kas pühapäeval oleks võimalik?","В субботу, к сожалению, не могу. А в воскресенье можно?","Unfortunately I can't on Saturday. Would Sunday be possible?"]]},
+ {who:"Naaber", role:"сосед", lvl:"B1", et:"Kas teie muusika võiks õhtuti natuke vaiksem olla?", ru:"Не могли бы вы по вечерам делать музыку потише?", en:"Could you keep your music a bit quieter in the evenings?", hint:"Извинись и пообещай.",
+  samples:[["Vabandust, ma ei teadnud, et see segab. Panen vaiksemaks.","Извините, я не знал, что это мешает. Сделаю потише.","Sorry, I didn't know it was bothering you. I'll turn it down."],["Muidugi, vabandan väga.","Конечно, очень извиняюсь.","Of course, I'm very sorry."]]},
+ {who:"Kati", role:"подруга", lvl:"B1", et:"Kas sa tahaksid suvel koos Tartusse sõita?", ru:"Хочешь летом вместе съездить в Тарту?", en:"Would you like to take a trip to Tartu together in the summer?", hint:"Ответь и уточни детали.",
+  samples:[["Väga hea mõte! Millal sa sõita tahaksid?","Отличная идея! Когда ты хочешь поехать?","Great idea! When would you like to go?"],["Tahaksin küll, aga suvel ma töötan.","Хотел бы, но летом я работаю.","I'd love to, but I'm working in the summer."]]},
+ {who:"Õpetaja", role:"преподаватель курсов", lvl:"B1", et:"Miks sa otsustasid eesti keelt õppida?", ru:"Почему ты решил учить эстонский?", en:"Why did you decide to learn Estonian?", hint:"Объясни свою причину.",
+  samples:[["Ma elan Eestis ja tahan kohalikega eesti keeles rääkida.","Я живу в Эстонии и хочу говорить с местными по-эстонски.","I live in Estonia and want to speak Estonian with the locals."],["Mul on seda tööks vaja.","Мне это нужно для работы.","I need it for work."]]},
+ {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Rääkige palun natuke oma töökogemusest.", ru:"Расскажите, пожалуйста, немного о своём опыте работы.", en:"Please tell us a little about your work experience.", hint:"Кратко расскажи об опыте.",
+  samples:[["Olen viis aastat töötanud müügijuhina ühes suures ettevõttes.","Я пять лет работал менеджером по продажам в одной большой компании.","I've worked as a sales manager at a large company for five years."],["Pärast ülikooli lõpetamist töötasin kaks aastat IT-firmas.","После окончания университета я два года работал в IT-фирме.","After graduating from university I worked at an IT company for two years."]]},
+ {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Miks te soovite just meie ettevõttes töötada?", ru:"Почему вы хотите работать именно в нашей компании?", en:"Why do you want to work at our company in particular?", hint:"Назови свои причины.",
+  samples:[["Teie ettevõte areneb kiiresti ja mulle meeldivad teie väärtused.","Ваша компания быстро развивается, и мне нравятся ваши ценности.","Your company is growing fast and I like your values."],["Tahan saada uusi kogemusi ja teie valdkond huvitab mind väga.","Я хочу получить новый опыт, и ваша сфера меня очень интересует.","I want to gain new experience, and your field interests me a lot."]]},
+ {who:"Marko", role:"коллега", lvl:"B2", et:"Mis sa arvad, kas kaugtöö on parem kui kontoris töötamine?", ru:"Как думаешь, удалённая работа лучше, чем работа в офисе?", en:"What do you think, is remote work better than working at the office?", hint:"Вырази мнение и объясни его.",
+  samples:[["Minu arvates on kaugtöö mugavam, aga kolleegidega suhtlemisest jääb puudu.","По-моему, удалёнка удобнее, но не хватает общения с коллегами.","In my opinion remote work is more convenient, but I miss talking to colleagues."],["Ma eelistan kontorit, sest seal on lihtsam keskenduda.","Я предпочитаю офис, потому что там проще сосредоточиться.","I prefer the office because it's easier to concentrate there."]]},
+ {who:"Jaan", role:"друг", lvl:"B2", et:"Kuulsin, et elektri hind tõuseb jälle. Mis sa sellest arvad?", ru:"Слышал, что цена на электричество опять растёт. Что ты об этом думаешь?", en:"I heard the price of electricity is going up again. What do you think about it?", hint:"Вырази своё мнение.",
+  samples:[["See on tõsine probleem, eriti talvel. Peame rohkem kokku hoidma.","Это серьёзная проблема, особенно зимой. Придётся больше экономить.","It's a serious problem, especially in winter. We'll have to save more."],["Kahjuks mõjutab see kõiki. Valitsus peaks midagi ette võtma.","К сожалению, это касается всех. Правительству стоит что-то предпринять.","Unfortunately it affects everyone. The government should do something."]]},
+ {who:"Kati", role:"подруга", lvl:"B2", et:"Kas sa oled kunagi Eesti saartel käinud?", ru:"Ты когда-нибудь бывал на эстонских островах?", en:"Have you ever been to the Estonian islands?", hint:"Расскажи о своём опыте или планах.",
+  samples:[["Jah, käisin eelmisel suvel Saaremaal ja seal oli imeline.","Да, прошлым летом я был на Сааремаа, и там было чудесно.","Yes, I went to Saaremaa last summer and it was wonderful."],["Ei ole veel, aga tahaksin väga Hiiumaale minna.","Ещё нет, но очень хотел бы съездить на Хийумаа.","Not yet, but I'd really like to go to Hiiumaa."]]},
+ {who:"Marko", role:"коллега", lvl:"B2", et:"Kas sa oleksid nõus mind järgmisel nädalal projektiga aitama?", ru:"Ты бы согласился помочь мне с проектом на следующей неделе?", en:"Would you agree to help me with the project next week?", hint:"Согласись с условием или откажись.",
+  samples:[["Olen nõus, kui mul endal kiireid tähtaegu ei ole.","Соглашусь, если у меня самого не будет срочных дедлайнов.","I'll agree if I don't have urgent deadlines myself."],["Hea meelega, räägime homme täpsemalt.","С удовольствием, завтра обсудим подробнее.","Gladly, let's talk about the details tomorrow."]]}
 ];
 let chat = null, chatLevel = "all", chatCtl = null;
 function newChat(){
-  const pool = CHATS.filter(c=>chatLevel==="all" || c.lvl===chatLevel);
+  const pool = CHATS.filter(c=>fitsLevel(c.lvl) && (chatLevel==="all" || c.lvl===chatLevel));
   let c = pool[Math.floor(Math.random()*pool.length)];
   if(chat && c===chat.sc && pool.length>1) c = pool[(pool.indexOf(c)+1) % pool.length];
   chatCtl?.abort();
-  chat = {sc:c, turns:[{who:"them", et:c.et, ru:c.ru}], draft:"", showSamples:false, busy:false, done:false};
+  chat = {sc:c, turns:[{who:"them", et:c.et, ru:isEn()?c.en:c.ru}], draft:"", showSamples:false, busy:false, done:false};
 }
 function chatTranscript(){
   return chat.turns.map(t=>t.who==="them" ? `${chat.sc.who}: ${t.et}` : `Ученик: ${t.text}`).join("\n");
@@ -732,8 +862,8 @@ function renderChat(){
   const c = chat.sc;
   v.append(h(`<div><h2>Чат</h2><p class="sub">Вам пишут по-эстонски. Ответьте так, как ответили бы в жизни. Нажмите на сообщение, чтобы увидеть перевод.</p></div>`));
   const chips = h(`<div class="chips" role="group" aria-label="Уровень"></div>`);
-  for(const [id,name] of [["all","Все"],["A2","A2"],["B1","B1"],["B2","B2"]]){
-    const n = id==="all" ? CHATS.length : CHATS.filter(x=>x.lvl===id).length;
+  for(const [id,name] of [["all","Все"],["A1","A1"],["A2","A2"],["B1","B1"],["B2","B2"]].filter(([id])=>id==="all" || fitsLevel(id))){
+    const n = CHATS.filter(x=>fitsLevel(x.lvl) && (id==="all" || x.lvl===id)).length;
     const b = h(`<button class="chip" aria-pressed="${chatLevel===id}">${name} <small>${n}</small></button>`);
     b.onclick = ()=>{ chatLevel = id; newChat(); renderChat(); };
     chips.append(b);
@@ -781,15 +911,15 @@ function renderChat(){
     v.append(comp);
   }
   if((chat.showSamples || offlineDone) && chat.turns.filter(t=>t.who==="them").length===1){
-    const sm = h(`<div class="panel"><div class="label">Примеры хороших ответов</div><div class="samples">${c.samples.map(([et,ru])=>`<div><div lang="et">${esc(et)}</div><div class="ru">${esc(ru)}</div></div>`).join("")}</div></div>`);
+    const sm = h(`<div class="panel"><div class="label">Примеры хороших ответов</div><div class="samples">${c.samples.map(([et,ru,en])=>`<div><div lang="et">${esc(et)}</div><div class="ru">${esc(isEn()?en:ru)}</div></div>`).join("")}</div></div>`);
     v.append(sm);
   }
   if(offlineDone){
     const mine = chat.turns.find(t=>t.who==="me").text;
-    v.append(claudeLink("Продолжить разговор в Claude", `Давай потренируем разговорный эстонский, мой родной язык русский, цель — уровень B2.
+    v.append(claudeLink("Продолжить разговор в Claude", `Давай потренируем разговорный эстонский, мой родной язык русский, цель — уровень ${S.level}.
 Ты — ${c.who} (${c.role}). Ты написал(а) мне: «${c.et}»
 Я ответил: «${mine}»
-Сначала коротко по-русски оцени мой ответ и исправь ошибки (падежи, спряжение, порядок слов). Потом продолжи разговор в роли одной короткой репликой на эстонском (уровень ${c.lvl}–B2) и дай её перевод в скобках. Делай так после каждого моего ответа, пока разговор не закончится естественно (3–4 обмена).`));
+Сначала коротко по-русски оцени мой ответ и исправь ошибки (падежи, спряжение, порядок слов). Потом продолжи разговор в роли одной короткой репликой на эстонском (уровень ${c.lvl}–${S.level}) и дай её перевод на ${L().acc} в скобках. Делай так после каждого моего ответа, пока разговор не закончится естественно (3–4 обмена).`));
     v.append(h(`<p class="note">Claude проверит ответ и продолжит разговор в роли собеседника. Это входит в подписку Claude. С ключом API в настройках разговор шёл бы прямо здесь.</p>`));
   }
   if(chat.done) v.append(h(`<div class="done"><div class="big">Tubli!</div><div>Разговор окончен.</div></div>`));
@@ -807,13 +937,13 @@ async function sendChat(){
   chat.busy = true; renderChat();
   chatCtl = new AbortController();
   const exchanges = chat.turns.filter(t=>t.who==="me").length;
-  const prompt = `Ты — ${c.who} (${c.role}) и переписываешься по-эстонски с русскоязычным учеником, который готовится к уровню B2.
+  const prompt = `Ты — ${c.who} (${c.role}) и переписываешься по-эстонски с русскоязычным учеником, который готовится к уровню ${S.level}.
 Ситуация начинается с твоей реплики: «${c.et}».
 Переписка до сих пор:
 ${chatTranscript()}
 
 1) Оцени последний ответ ученика как реплику в этом разговоре: verdict (correct — естественно и без ошибок, almost — понятно, но с мелкими ошибками, wrong — серьёзные ошибки или не по смыслу). feedback — 1–2 предложения по-русски: что не так (падежи, спряжение, порядок слов, лексика) или короткая похвала. corrected — естественный исправленный вариант его ответа на эстонском.
-2) Продолжи разговор в роли одной короткой естественной репликой на эстонском уровня ${c.lvl}–B2 (reply_et) и дай её перевод на русский (reply_ru).
+2) Продолжи разговор в роли одной короткой естественной репликой на эстонском уровня ${c.lvl}–${S.level} (reply_et) и дай её перевод на ${L().acc} (reply_ru).
 Это обмен номер ${exchanges}. Если разговор естественно закончился или это уже 4-й обмен, поставь done = true и сделай reply_et прощальной репликой.`;
   try{
     const r = await sample.json(prompt, {schema:SCHEMA_CHAT, signal:chatCtl.signal});
@@ -834,7 +964,7 @@ ${chatTranscript()}
 let dq = "", dEntry = null, dBusy = false, dCtl = null;
 function renderDict(){
   const v = $("#v-dict"); v.innerHTML = "";
-  v.append(h(`<div><h2>Словарь</h2><p class="sub">Эстонский ↔ русский. Ищите в словаре приложения или спросите Claude о любом слове: перевод, формы и примеры${sample?". Слова, которые вы уже спрашивали, доступны и без интернета":""}.</p></div>`));
+  v.append(h(`<div><h2>Словарь</h2><p class="sub">Эстонский ↔ ${L().acc}. Ищите в словаре приложения или спросите Claude о любом слове: перевод, формы и примеры${sample?". Слова, которые вы уже спрашивали, доступны и без интернета":""}.</p></div>`));
   const form = h(`<form class="search" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="dict-q" type="search" placeholder="Например: kohustus или обязанность" autocomplete="off" enterkeyhint="search"></form>`);
   const inp = $("input",form); inp.value = dq;
   const results = h(`<div style="display:flex;flex-direction:column;gap:12px"></div>`);
@@ -843,6 +973,8 @@ function renderDict(){
   v.append(form, results);
   drawLocal(results);
 }
+// Match from the start of any word, so "cat" finds "cat" but not "vacation".
+const matchesWord = (text, q) => { const t = normalize(text); return t.startsWith(q) || t.split(/[ ,;()/]+/).some(part=>part.startsWith(q)) || t.includes(" "+q); };
 function drawLocal(results){
   results.innerHTML = "";
   const q = normalize(dq);
@@ -851,9 +983,9 @@ function drawLocal(results){
     if(!dEntry && !dBusy) results.append(h(`<p class="note">Наберите слово на любом из двух языков. ${sample?"Нажмите «Найти» на клавиатуре, чтобы получить подробную статью от Claude.":"Если слова нет во встроенном словаре, кнопка «Спросить в Claude» откроет Claude с готовым запросом: перевод, формы и примеры."}</p>`));
     return;
   }
-  const cached = Object.values(S.dictCache).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).map(w=>({et:w.et, ru:w.ru, forms:(w.forms||[]).slice(0,2).map(f=>f.value).join(" · ")}));
+  const cached = Object.entries(S.dictCache).filter(([k])=>k.startsWith("en:")===isEn()).map(([,w])=>w).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).map(w=>({et:w.et, ru:w.ru, forms:(w.forms||[]).slice(0,2).map(f=>f.value).join(" · ")}));
   const seenEt = new Set();
-  const hits = [...allWords(), ...cached].filter(w=>!seenEt.has(w.et) && seenEt.add(w.et)).filter(w=>normalize(w.et).includes(q) || normalize(w.ru).includes(q)).slice(0,30);
+  const hits = [...everyWord(), ...cached].filter(w=>!seenEt.has(w.et) && seenEt.add(w.et)).filter(w=>[w.et, w.ru, w.ruText, w.enText].some(x=>x && matchesWord(x, q))).slice(0,30);
   if(sample){
     const ask = h(`<button class="btn primary">Спросить Claude: «${esc(dq.trim())}»</button>`);
     ask.onclick = ()=>askClaude(dq.trim(), results);
@@ -882,28 +1014,28 @@ function entryView(){
     ${e.note?`<div class="note">${esc(e.note)}</div>`:""}
     <div class="row"></div></div>`);
   $(".icon-btn",p).onclick=()=>speak(e.et);
-  const exists = allWords().some(w=>w.et===e.et);
+  const exists = everyWord().some(w=>w.et===e.et);
   const add = h(`<button class="btn sm ${exists?"ghost":"primary"}">${exists?"Уже в карточках":"Добавить в карточки"}</button>`);
   add.disabled = exists;
   add.onclick = ()=>{
-    S.custom.push({et:e.et, ru:e.ru, lvl:e.level||"B2", forms:(e.forms||[]).slice(0,2).map(f=>f.value).join(" · "), example:e.examples?.[0]?.et||""});
+    S.custom.push({et:e.et, [isEn()?"en":"ru"]:e.ru, lvl:e.level||"B2", forms:(e.forms||[]).slice(0,2).map(f=>f.value).join(" · "), example:e.examples?.[0]?.et||""});
     persist(); toast("Добавлено в «Мои слова»"); updateStat(); drawLocal(p.parentElement);
   };
   $(".row",p).append(add);
   return p;
 }
 async function askClaude(q, results){
-  const key = normalize(q);
+  const key = (isEn()?"en:":"") + normalize(q);
   if(S.dictCache[key]){ dEntry = S.dictCache[key]; dBusy = false; drawLocal(results); return; }
   if(!sample){ window.open(claudeUrl(dictPrompt(q)), "_blank", "noopener"); return; }
   dCtl?.abort(); dCtl = new AbortController();
   dBusy = true; dEntry = null; drawLocal(results);
   try{
-    const r = await sample.json(`Ты эстонско-русский словарь для русскоязычного ученика (цель B2). Запрос: "${q}".
-Определи язык запроса (эстонский или русский). Дай основное эстонское слово в начальной форме и русский перевод (1–4 значения через запятую). Если запрос — фраза или форма слова, дай начальную форму и объясни форму в note.
+    const r = await sample.json(`Ты эстонско-${isEn()?"английский":"русский"} словарь для русскоязычного ученика (цель ${S.level}). Запрос: "${q}".
+Определи язык запроса (эстонский, русский или английский). Дай основное эстонское слово в начальной форме и перевод на ${L().acc} (1–4 значения через запятую). Если запрос — фраза или форма слова, дай начальную форму и объясни форму в note.
 Для существительных и прилагательных forms: ["родительный (omastav)", "частичный (osastav)", "мн. ч. частичный"]. Для глаголов: ["ma-инфинитив","da-инфинитив","наст. вр. (ma)","прош. вр. (ma)","страдат. (tud)"]. Для неизменяемых слов forms: [].
 Дай 2 коротких естественных примера уровня B1–B2.
-Поля: et — слово, ru — перевод, pos — часть речи по-русски, level — A1/A2/B1/B2/C1, forms, examples, note — короткое пояснение или пустая строка.`,
+Поля: et — слово, ru — перевод на ${L().acc}, pos — часть речи по-русски, level — A1/A2/B1/B2/C1, forms, examples, note — короткое пояснение или пустая строка.`,
       {schema:SCHEMA_DICT, signal:dCtl.signal});
     if(r?.et){ dEntry = {et:String(r.et), ru:String(r.ru||""), pos:r.pos, level:r.level, forms:Array.isArray(r.forms)?r.forms.filter(f=>f&&f.value):[], examples:Array.isArray(r.examples)?r.examples.filter(x=>x&&x.et):[], note:r.note};
       S.dictCache[key] = dEntry; persist(); }
@@ -917,8 +1049,22 @@ window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); installE
 const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 let keyStatus = "";
 function renderSettings(){
-  const v = $("#v-settings"); v.innerHTML = "";
+  const v = $("#v-more"); v.innerHTML = "";
+  v.append(backBtn());
   v.append(h(`<div><h2>Настройки</h2><p class="sub">Прогресс и ключ хранятся только на этом телефоне.</p></div>`));
+
+  const learn = h(`<div class="panel"><div class="label">Обучение</div>
+    <div class="field"><label for="level">Мой уровень</label><select id="level">${LEVELS.map(l=>`<option value="${l.id}" ${S.level===l.id?"selected":""}>${l.name}: ${l.note}</option>`).join("")}</select></div>
+    <div class="field"><label for="lang">Язык перевода</label><select id="lang">${Object.entries(LANGS).map(([k,l])=>`<option value="${k}" ${S.lang===k?"selected":""}>${l.name}</option>`).join("")}</select>
+      <div class="note">На этом языке будут переводы слов, предложений и сообщений в чате. Объяснения останутся на русском.</div></div>
+    <label class="check"><input id="slow" type="checkbox" ${S.slow?"checked":""}> Медленная озвучка</label>
+    <div class="note">Озвучка: голос Mari, синтез речи Neurokõne Тартуского университета. Прослушанные слова сохраняются и звучат без интернета.</div>
+    <div class="row"><button class="btn sm ghost" id="test-voice">${SPEAK_ICON} Проверить звук</button></div></div>`);
+  $("#level",learn).onchange = e=>{ setLevel(e.target.value); toast("Уровень изменён"); };
+  $("#lang",learn).onchange = e=>{ S.lang = e.target.value; sentCur=null; chat=null; dEntry=null; persist(); render(); toast(S.lang==="en"?"Переводы на английском":"Переводы на русском"); };
+  $("#slow",learn).onchange = e=>{ S.slow = e.target.checked; persist(); };
+  $("#test-voice",learn).onclick = ()=>speak("Tere! Kuidas sul läheb?");
+  v.append(learn);
 
   const claude = h(`<div class="panel">
     <div class="label">Ключ API (необязательно)</div>
@@ -986,6 +1132,188 @@ function renderSettings(){
     setTimeout(()=>{ if(reset.isConnected){ delete reset.dataset.armed; reset.textContent="Сбросить прогресс"; } }, 4000);
   };
   v.append(data);
+}
+
+// ---------- More: hub, sounds, Estonia ----------
+function backBtn(){
+  const b = h(`<button class="btn sm ghost back-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Ещё</button>`);
+  b.onclick = ()=>{ S.more=""; persist(); renderMore(); window.scrollTo(0,0); };
+  return b;
+}
+function renderMore(){
+  if(S.more==="settings") return renderSettings();
+  if(S.more==="sounds") return renderSounds();
+  if(S.more==="estonia") return renderEstonia();
+  const v = $("#v-more"); v.innerHTML = "";
+  v.append(h(`<div><h2>Ещё</h2></div>`));
+  const items = [
+    ["sounds","Звуки и буквы","Алфавит с озвучкой, õ ä ö ü, долгота, дифтонги"],
+    ["estonia","Об Эстонии","Уезды, крупные города, праздники и викторина"],
+    ["settings","Настройки","Уровень, язык перевода, озвучка, ключ API, прогресс"]
+  ];
+  const list = h(`<div class="list"></div>`);
+  for(const [id,name,note] of items){
+    const it = h(`<button class="item menu"><div><div class="et">${name}</div><div class="ru">${note}</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>`);
+    it.onclick = ()=>{ S.more=id; persist(); renderMore(); window.scrollTo(0,0); };
+    list.append(it);
+  }
+  v.append(list);
+}
+
+// Letters: [letter, example, translation, how it sounds]
+const ALPHABET = [
+ ["A a","ema","мама","Как русское «а»."],
+ ["B b","buss","автобус","Глухо и слабо, между «б» и «п»."],
+ ["D d","kodu","дом (родной)","Глухо и слабо, между «д» и «т»."],
+ ["E e","elu","жизнь","Как «э» в слове «это»."],
+ ["F f","foto","фото","Только в заимствованных словах."],
+ ["G g","mägi","гора","Глухо и слабо, между «г» и «к»."],
+ ["H h","homme","завтра","Лёгкий выдох, как английское h."],
+ ["I i","isa","папа","Как русское «и»."],
+ ["J j","jah","да","Как «й»."],
+ ["K k","kass","кошка","Как «к», без придыхания."],
+ ["L l","lill","цветок","Как «л»."],
+ ["M m","maa","земля","Как «м»."],
+ ["N n","nina","нос","Как «н»."],
+ ["O o","onu","дядя","Как «о», даже без ударения."],
+ ["P p","pall","мяч","Как «п»."],
+ ["R r","raha","деньги","Раскатистое, как русское «р»."],
+ ["S s","suu","рот","Как «с», чуть мягче."],
+ ["Š š","šokolaad","шоколад","Как «ш», в заимствованиях."],
+ ["T t","tuba","комната","Как «т»."],
+ ["U u","uks","дверь","Как «у»."],
+ ["V v","vesi","вода","Как «в»."],
+ ["Õ õ","õun","яблоко","Нет в русском. Похоже на «ы», но язык чуть ниже. Губы не округлять."],
+ ["Ä ä","äri","бизнес, магазин","Очень открытое «э», рот шире, как в английском cat."],
+ ["Ö ö","öö","ночь","Губы как для «о», язык как для «э». Похоже на «ё» без «й»."],
+ ["Ü ü","üks","один","Губы как для «у», язык как для «и». Как немецкое ü."]
+];
+const LENGTH_PAIRS = [["koli","хлам","kooli","школы"],["sada","сто","saada","отправь"],["lina","лён","linna","города"],["kana","курица","kanna","неси"]];
+const DIPHTHONGS = [["ai","lai","широкий"],["ei","leib","хлеб"],["oi","poiss","мальчик"],["ui","kui","когда; если"],["äi","päike","солнце"],["õi","õige","правильный"],["au","laud","стол"],["õu","õun","яблоко"]];
+let soundSel = null;
+function renderSounds(){
+  const v = $("#v-more"); v.innerHTML = "";
+  v.append(backBtn());
+  v.append(h(`<div><h2>Звуки и буквы</h2><p class="sub">Нажмите на букву или слово, чтобы услышать. Эстонское слово читается так, как пишется, а ударение почти всегда на первом слоге.</p></div>`));
+
+  const sel = soundSel ? ALPHABET.find(a=>a[0]===soundSel) : null;
+  const detail = h(`<div class="panel letter-detail">${sel
+    ? `<div class="spread"><div class="big-letter">${esc(sel[0])}</div><button class="btn sm ghost">${SPEAK_ICON} ${esc(sel[1])}</button></div><div><b lang="et">${esc(sel[1])}</b> — ${esc(sel[2])}</div><div>${esc(sel[3])}</div>`
+    : `<div class="note">Выберите букву, чтобы увидеть, как она звучит.</div>`}</div>`);
+  if(sel) $("button",detail).onclick = ()=>speak(sel[1]);
+  v.append(h(`<div class="label">Алфавит</div>`), detail);
+  const grid = h(`<div class="letters"></div>`);
+  for(const a of ALPHABET){
+    const b = h(`<button class="letter ${soundSel===a[0]?"on":""} ${/[ÕÄÖÜ]/.test(a[0])?"special":""}"><span class="l">${esc(a[0])}</span><span class="w" lang="et">${esc(a[1])}</span></button>`);
+    b.onclick = ()=>{ soundSel = a[0]; speak(a[1]); renderSounds(); };
+    grid.append(b);
+  }
+  v.append(grid);
+  v.append(h(`<p class="note">Буквы c, q, w, x, y, z, ž встречаются только в иностранных словах и именах.</p>`));
+
+  const len = h(`<div class="panel"><div class="label">Короткий и долгий звук</div>
+    <div>Двойная буква означает долгий звук. От долготы меняется смысл слова, поэтому тяните двойные буквы заметно дольше.</div><div class="pairs"></div></div>`);
+  for(const [a,at,b,bt] of LENGTH_PAIRS){
+    const row = h(`<div class="pair"><button class="btn sm ghost">${SPEAK_ICON} <span lang="et">${a}</span></button><span class="note">${at}</span><button class="btn sm ghost">${SPEAK_ICON} <span lang="et">${b}</span></button><span class="note">${bt}</span></div>`);
+    const [x,y] = row.querySelectorAll("button"); x.onclick=()=>speak(a); y.onclick=()=>speak(b);
+    $(".pairs",len).append(row);
+  }
+  v.append(len);
+
+  const q3 = h(`<div class="panel"><div class="label">Третья долгота: kooli и kooli</div>
+    <div>В эстонском есть третья, сверхдолгая степень. На письме её не видно: <b lang="et">kooli</b> «школы» (род. п.) и <b lang="et">kooli</b> «в школу» пишутся одинаково. Во втором случае «оо» тянется ещё дольше, а голос к концу слога понижается. Различить их помогает контекст.</div>
+    <div class="pairs"></div><div class="note">Синтезатор выбирает долготу по смыслу предложения. Слушайте разницу в целых фразах.</div></div>`);
+  for(const [et,ru] of [["See on kooli maja.","Это здание школы."],["Ma lähen kooli.","Я иду в школу."],["Linna keskus on ilus.","Центр города красивый."],["Ma sõidan linna.","Я еду в город."]]){
+    const row = h(`<div class="pair wide"><button class="btn sm ghost">${SPEAK_ICON} <span lang="et">${et}</span></button><span class="note">${ru}</span></div>`);
+    $("button",row).onclick = ()=>speak(et);
+    $(".pairs",q3).append(row);
+  }
+  v.append(q3);
+
+  const di = h(`<div class="panel"><div class="label">Дифтонги</div><div>Две гласные в одном слоге произносятся слитно, без паузы и без «й» между ними.</div><div class="pairs"></div></div>`);
+  for(const [d,w,t] of DIPHTHONGS){
+    const row = h(`<div class="pair"><b class="dg">${d}</b><button class="btn sm ghost">${SPEAK_ICON} <span lang="et">${w}</span></button><span class="note">${t}</span></div>`);
+    $("button",row).onclick = ()=>speak(w);
+    $(".pairs",di).append(row);
+  }
+  v.append(di);
+}
+
+// Counties: [Estonian, Russian, centre (et), centre (ru)]
+const COUNTIES = [
+ ["Harjumaa","Харьюмаа","Tallinn","Таллин"],["Hiiumaa","Хийумаа","Kärdla","Кярдла"],["Ida-Virumaa","Ида-Вирумаа","Jõhvi","Йыхви"],
+ ["Jõgevamaa","Йыгевамаа","Jõgeva","Йыгева"],["Järvamaa","Ярвамаа","Paide","Пайде"],["Läänemaa","Ляэнемаа","Haapsalu","Хаапсалу"],
+ ["Lääne-Virumaa","Ляэне-Вирумаа","Rakvere","Раквере"],["Põlvamaa","Пылвамаа","Põlva","Пылва"],["Pärnumaa","Пярнумаа","Pärnu","Пярну"],
+ ["Raplamaa","Рапламаа","Rapla","Рапла"],["Saaremaa","Сааремаа","Kuressaare","Курессааре"],["Tartumaa","Тартумаа","Tartu","Тарту"],
+ ["Valgamaa","Валгамаа","Valga","Валга"],["Viljandimaa","Вильяндимаа","Viljandi","Вильянди"],["Võrumaa","Вырумаа","Võru","Выру"]
+];
+const CITIES = [["Tallinn","Таллин","≈ 450 тыс."],["Tartu","Тарту","≈ 97 тыс."],["Narva","Нарва","≈ 53 тыс."],["Pärnu","Пярну","≈ 40 тыс."],
+ ["Kohtla-Järve","Кохтла-Ярве","≈ 32 тыс."],["Viljandi","Вильянди","≈ 17 тыс."],["Maardu","Маарду","≈ 16 тыс."],["Rakvere","Раквере","≈ 15 тыс."]];
+const FACTS = [
+ ["Pealinn","Столица","Tallinn"],["Rahvaarv","Население","около 1,37 млн"],["Riigikeel","Государственный язык","eesti keel"],
+ ["Raha","Валюта","euro (с 2011 года)"],["Saared","Острова","более 2000, самые большие: Saaremaa и Hiiumaa"],
+ ["Kõrgeim tipp","Самая высокая точка","Suur Munamägi, 318 м"],["Suurim järv","Самое большое озеро","Peipsi järv (Чудское)"],
+ ["Lipp","Флаг","sinimustvalge — сине-чёрно-белый"],["Rahvuslill","Национальный цветок","rukkilill — василёк"],
+ ["Rahvuslind","Национальная птица","suitsupääsuke — деревенская ласточка"],
+ ["Iseseisvuspäev","День независимости","24. veebruar (1918)"],["Võidupüha ja jaanipäev","День победы и Иванов день","23. ja 24. juuni"]
+];
+let quiz = null;
+function newQuiz(){
+  const q = COUNTIES[Math.floor(Math.random()*COUNTIES.length)];
+  const opts = shuffle([q, ...shuffle(COUNTIES.filter(c=>c!==q)).slice(0,3)]);
+  quiz = {q, opts, picked:null, score:quiz?.score||0, total:quiz?.total||0};
+}
+function renderEstonia(){
+  const v = $("#v-more"); v.innerHTML = "";
+  v.append(backBtn());
+  v.append(h(`<div><h2>Об Эстонии</h2><p class="sub">Нажмите на эстонское название, чтобы услышать, как оно звучит.</p></div>`));
+  const sayBtn = (et) => { const b = h(`<button class="say" lang="et">${esc(et)}</button>`); b.onclick = ()=>speak(et); return b; };
+
+  const facts = h(`<div class="list"></div>`);
+  for(const [et,ru,val] of FACTS){
+    const it = h(`<div class="item"><div><div class="ru">${esc(ru)}</div><div class="et"></div></div><div class="val">${esc(val)}</div></div>`);
+    $(".et",it).append(sayBtn(et));
+    facts.append(it);
+  }
+  v.append(h(`<div class="label">Коротко</div>`), facts);
+
+  if(!quiz) newQuiz();
+  const qz = h(`<div class="panel"><div class="spread"><div class="label">Викторина: центр уезда</div><span class="note">${quiz.score} из ${quiz.total}</span></div>
+    <div>Какой город — центр уезда <b lang="et">${esc(quiz.q[0])}</b> (${esc(quiz.q[1])})?</div><div class="actions quiz"></div><div class="qres"></div></div>`);
+  for(const o of quiz.opts){
+    const cls = quiz.picked ? (o===quiz.q ? "good" : (o===quiz.picked ? "bad" : "")) : "";
+    const b = h(`<button class="btn ${cls}" lang="et">${esc(o[2])}</button>`);
+    b.disabled = !!quiz.picked;
+    b.onclick = ()=>{ quiz.picked = o; quiz.total++; if(o===quiz.q) quiz.score++; speak(quiz.q[2]); renderEstonia(); };
+    $(".quiz",qz).append(b);
+  }
+  if(quiz.picked){
+    $(".qres",qz).append(h(`<div>${quiz.picked===quiz.q?"Верно!":"Не совсем."} Центр уезда ${esc(quiz.q[0])} — <b lang="et">${esc(quiz.q[2])}</b> (${esc(quiz.q[3])}).</div>`));
+    const n = h(`<button class="btn primary">Следующий вопрос</button>`); n.onclick = ()=>{ newQuiz(); renderEstonia(); };
+    $(".qres",qz).append(n);
+  }
+  v.append(qz);
+
+  const ct = h(`<div><div class="label" style="margin-bottom:8px">15 уездов (maakonnad) и их центры</div><div class="list"></div></div>`);
+  for(const [et,ru,c,cru] of COUNTIES){
+    const it = h(`<div class="item"><div><div class="et"></div><div class="ru">${esc(ru)}</div></div><div class="val"><span class="c"></span><div class="ru">${esc(cru)}</div></div></div>`);
+    $(".et",it).append(sayBtn(et)); $(".c",it).append(sayBtn(c));
+    $(".list",ct).append(it);
+  }
+  v.append(ct);
+  v.append(h(`<div class="panel"><div class="label">Как сказать по-эстонски</div>
+    <div>Где? <b lang="et">Ma elan Tartumaal.</b> Я живу в Тартумаа.</div>
+    <div>Куда? <b lang="et">Ma sõidan Saaremaale.</b> Я еду на Сааремаа.</div>
+    <div>Откуда? <b lang="et">Ma olen pärit Läänemaalt.</b> Я родом из Ляэнемаа.</div>
+    <div class="note">У названий на -maa окончания всегда такие: -maal, -maale, -maalt.</div></div>`));
+
+  const cities = h(`<div><div class="label" style="margin-bottom:8px">Крупнейшие города</div><div class="list"></div><p class="note">Численность населения примерная, округлена.</p></div>`);
+  for(const [et,ru,n] of CITIES){
+    const it = h(`<div class="item"><div><div class="et"></div><div class="ru">${esc(ru)}</div></div><div class="val">${esc(n)}</div></div>`);
+    $(".et",it).append(sayBtn(et));
+    $(".list",cities).append(it);
+  }
+  v.append(cities);
 }
 
 if("serviceWorker" in navigator){
