@@ -143,7 +143,7 @@ input[type=search]{width:100%;border:1px solid var(--line);background:var(--surf
 
 /* tabbar */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
-nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
 nav.tabs button{border:0;background:none;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;color:var(--muted);font-weight:500}
 nav.tabs button[aria-current="page"]{color:var(--accent);font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px);text-align:center}
@@ -153,6 +153,18 @@ input[type=password],input[type=text]{width:100%;border:1px solid var(--line);ba
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
 a{color:var(--accent)}
 .ok{color:var(--good);font-weight:600}.err{color:var(--bad);font-weight:600}
+.who{display:flex;gap:10px;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-family:var(--f-display);flex:none}
+.thread{display:flex;flex-direction:column;gap:8px}
+.bubble{max-width:86%;padding:10px 14px;border-radius:18px;font-size:16px;line-height:1.35;text-align:left;border:0;word-break:break-word}
+.bubble.them{align-self:flex-start;background:var(--sunk);color:var(--fg);border-bottom-left-radius:6px}
+.bubble.me{align-self:flex-end;background:var(--accent);color:var(--accent-fg);border-bottom-right-radius:6px}
+.bubble .tr{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+.bubble.typing{display:flex;gap:5px;padding:14px}
+.thread .verdict{align-self:flex-end;max-width:92%;padding:10px 12px;font-size:14px}
+.samples{display:flex;flex-direction:column;gap:8px}
+.samples div{background:var(--sunk);border-radius:12px;padding:10px 12px}
+.samples .ru{color:var(--muted);font-size:14px}
 </style>
 </head>
 <body>
@@ -168,13 +180,15 @@ a{color:var(--accent)}
 <main>
   <section class="wrap" id="v-cards"></section>
   <section class="wrap" id="v-sent" hidden></section>
+  <section class="wrap" id="v-chat" hidden></section>
   <section class="wrap" id="v-dict" hidden></section>
   <section class="wrap" id="v-settings" hidden></section>
 </main>
 
 <nav class="tabs" aria-label="Разделы"><div class="in">
   <button data-tab="cards" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="14" height="15" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v13"/></svg>Карточки</button>
-  <button data-tab="sent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Предложения</button>
+  <button data-tab="sent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Перевод</button>
+  <button data-tab="chat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h.01M12 10h.01M16 10h.01"/><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Чат</button>
   <button data-tab="dict"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a2 2 0 0 0-2 2"/><path d="M20 4v14h-6"/></svg>Словарь</button>
   <button data-tab="settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Настройки</button>
 </div></nav>
@@ -401,6 +415,7 @@ const obj = (properties) => ({type:"object", properties, required:Object.keys(pr
 const STR = {type:"string"};
 const SCHEMA_GRADE = obj({verdict:{type:"string", enum:["correct","almost","wrong"]}, score:{type:"integer"}, feedback:STR, corrected:STR});
 const SCHEMA_GEN = obj({et:STR, ru:STR, words:{type:"array", items:STR}});
+const SCHEMA_CHAT = obj({verdict:{type:"string", enum:["correct","almost","wrong"]}, feedback:STR, corrected:STR, reply_et:STR, reply_ru:STR, done:{type:"boolean"}});
 const SCHEMA_DICT = obj({et:STR, ru:STR, pos:STR, level:STR, forms:{type:"array", items:obj({label:STR, value:STR})}, examples:{type:"array", items:obj({et:STR, ru:STR})}, note:STR});
 function sampleErr(e){
   if(e instanceof Anthropic.APIUserAbortError || e?.name==="AbortError") return "";
@@ -430,10 +445,11 @@ function connectHint(text){
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; persist(); render(); window.scrollTo(0,0); });
 function render(){
   document.querySelectorAll("nav.tabs button").forEach(b=>{ if(b.dataset.tab===S.tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
-  for(const id of ["cards","sent","dict","settings"]) $("#v-"+id).hidden = S.tab!==id;
+  for(const id of ["cards","sent","chat","dict","settings"]) $("#v-"+id).hidden = S.tab!==id;
   updateStat();
   if(S.tab==="cards") renderCards();
   if(S.tab==="sent") renderSent();
+  if(S.tab==="chat") renderChat();
   if(S.tab==="dict") renderDict();
   if(S.tab==="settings") renderSettings();
 }
@@ -649,6 +665,169 @@ async function generateSentence(btn){
     }
   }catch(e){ const m=sampleErr(e); if(m) toast(m); }
   renderSent();
+}
+
+// ---------- Chat ----------
+// Each situation: who writes, their role, level, the first message, a hint and two sample replies [et, ru].
+const CHATS = [
+ {who:"Kati", role:"подруга", lvl:"A2", et:"Tere! Kas sa tahad täna õhtul kinno tulla?", ru:"Привет! Хочешь сегодня вечером пойти в кино?", hint:"Согласись или вежливо откажись.",
+  samples:[["Jah, hea meelega! Mis kell film algab?","Да, с удовольствием! Во сколько начинается фильм?"],["Kahjuks ei saa, mul on täna palju tööd.","К сожалению, не могу, у меня сегодня много работы."]]},
+ {who:"Jaan", role:"друг", lvl:"A2", et:"Kuidas sul läheb?", ru:"Как у тебя дела?", hint:"Расскажи, как дела, и спроси в ответ.",
+  samples:[["Hästi, aitäh! Aga sul?","Хорошо, спасибо! А у тебя?"],["Nii ja naa, olen natuke väsinud.","Так себе, немного устал."]]},
+ {who:"Jaan", role:"друг", lvl:"A2", et:"Mida sa nädalavahetusel tegid?", ru:"Что ты делал на выходных?", hint:"Расскажи, чем занимался.",
+  samples:[["Käisin sõpradega metsas matkamas.","Ходил с друзьями в поход в лес."],["Olin kodus ja puhkasin.","Был дома и отдыхал."]]},
+ {who:"Naaber", role:"соседка", lvl:"A2", et:"Tere! Kas teil oleks natuke suhkrut laenata?", ru:"Здравствуйте! Не одолжите немного сахара?", hint:"Помоги соседке или извинись.",
+  samples:[["Muidugi, oodake hetk.","Конечно, подождите минутку."],["Vabandust, mul endalgi pole enam.","Извините, у меня самого уже нет."]]},
+ {who:"Müüja", role:"продавец в магазине", lvl:"A2", et:"Tere! Kas saan teid aidata?", ru:"Здравствуйте! Могу вам помочь?", hint:"Скажи, что ищешь, или что просто смотришь.",
+  samples:[["Jah, palun. Ma otsin talvejopet.","Да, пожалуйста. Я ищу зимнюю куртку."],["Aitäh, ma lihtsalt vaatan.","Спасибо, я просто смотрю."]]},
+ {who:"Kelner", role:"официант", lvl:"A2", et:"Mida te soovite juua?", ru:"Что желаете выпить?", hint:"Закажи напиток.",
+  samples:[["Klaas vett ja üks kohv, palun.","Стакан воды и один кофе, пожалуйста."],["Ma võtaksin tassi teed.","Я бы взял чашку чая."]]},
+ {who:"Möödakäija", role:"прохожий", lvl:"A2", et:"Vabandage, kas te teate, kus on raudteejaam?", ru:"Извините, вы не знаете, где вокзал?", hint:"Объясни дорогу или скажи, что не знаешь.",
+  samples:[["Jah, minge otse ja siis vasakule.","Да, идите прямо, а потом налево."],["Vabandust, ma pole siit pärit.","Извините, я не местный."]]},
+ {who:"Kati", role:"подруга", lvl:"A2", et:"Palju õnne sünnipäevaks! Kuidas sa tähistad?", ru:"С днём рождения! Как будешь отмечать?", hint:"Поблагодари и расскажи о планах.",
+  samples:[["Aitäh! Kutsun õhtul mõned sõbrad külla.","Спасибо! Вечером позову в гости пару друзей."],["Suur aitäh! Lähen perega restorani.","Большое спасибо! Пойду с семьёй в ресторан."]]},
+ {who:"Marko", role:"коллега", lvl:"B1", et:"Kas sa saaksid homme kell kümme koosolekule tulla?", ru:"Сможешь завтра в десять прийти на совещание?", hint:"Согласись или предложи другое время.",
+  samples:[["Jah, kell kümme sobib mulle hästi.","Да, в десять мне подходит."],["Kell kümme ma ei saa, kas kell üksteist sobiks?","В десять не могу, подойдёт ли в одиннадцать?"]]},
+ {who:"Ülemus", role:"начальник", lvl:"B1", et:"Kas sa jõuaksid aruande reedeks valmis teha?", ru:"Успеешь подготовить отчёт к пятнице?", hint:"Пообещай или договорись о другом сроке.",
+  samples:[["Jah, see peaks reedeks valmis olema.","Да, к пятнице он должен быть готов."],["Reedeks on keeruline, aga esmaspäevaks kindlasti.","К пятнице сложно, но к понедельнику точно."]]},
+ {who:"Perearstikeskus", role:"регистратура семейного врача", lvl:"B1", et:"Perearstikeskus, tere. Mis teid vaevab?", ru:"Центр семейных врачей, здравствуйте. Что вас беспокоит?", hint:"Опиши, что болит, или попроси записать к врачу.",
+  samples:[["Tere. Mul on juba kolm päeva palavik ja kurk valutab.","Здравствуйте. У меня уже три дня температура и болит горло."],["Tere. Ma sooviksin aega perearsti juurde.","Здравствуйте. Я хотел бы записаться к семейному врачу."]]},
+ {who:"Apteeker", role:"фармацевт", lvl:"B1", et:"Kas teil on retsept?", ru:"У вас есть рецепт?", hint:"Скажи про рецепт или спроси лекарство без рецепта.",
+  samples:[["Jah, digiretsept peaks minu isikukoodi peal olema.","Да, электронный рецепт должен быть на моём личном коде."],["Ei ole. Kas teil on midagi peavalu vastu, mida saab ilma retseptita osta?","Нет. Есть у вас что-нибудь от головной боли, что можно купить без рецепта?"]]},
+ {who:"Üürileandja", role:"хозяин квартиры", lvl:"B1", et:"Tere! Korter on veel vaba. Kas te soovite seda laupäeval vaatama tulla?", ru:"Здравствуйте! Квартира ещё свободна. Хотите прийти посмотреть её в субботу?", hint:"Договорись о времени просмотра.",
+  samples:[["Jah, laupäev sobib mulle. Mis kell?","Да, суббота мне подходит. Во сколько?"],["Laupäeval ma kahjuks ei saa. Kas pühapäeval oleks võimalik?","В субботу, к сожалению, не могу. А в воскресенье можно?"]]},
+ {who:"Naaber", role:"сосед", lvl:"B1", et:"Kas teie muusika võiks õhtuti natuke vaiksem olla?", ru:"Не могли бы вы по вечерам делать музыку потише?", hint:"Извинись и пообещай.",
+  samples:[["Vabandust, ma ei teadnud, et see segab. Panen vaiksemaks.","Извините, я не знал, что это мешает. Сделаю потише."],["Muidugi, vabandan väga.","Конечно, очень извиняюсь."]]},
+ {who:"Kati", role:"подруга", lvl:"B1", et:"Kas sa tahaksid suvel koos Tartusse sõita?", ru:"Хочешь летом вместе съездить в Тарту?", hint:"Ответь и уточни детали.",
+  samples:[["Väga hea mõte! Millal sa sõita tahaksid?","Отличная идея! Когда ты хочешь поехать?"],["Tahaksin küll, aga suvel ma töötan.","Хотел бы, но летом я работаю."]]},
+ {who:"Õpetaja", role:"преподаватель курсов", lvl:"B1", et:"Miks sa otsustasid eesti keelt õppida?", ru:"Почему ты решил учить эстонский?", hint:"Объясни свою причину.",
+  samples:[["Ma elan Eestis ja tahan kohalikega eesti keeles rääkida.","Я живу в Эстонии и хочу говорить с местными по-эстонски."],["Mul on seda tööks vaja.","Мне это нужно для работы."]]},
+ {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Rääkige palun natuke oma töökogemusest.", ru:"Расскажите, пожалуйста, немного о своём опыте работы.", hint:"Кратко расскажи об опыте.",
+  samples:[["Olen viis aastat töötanud müügijuhina ühes suures ettevõttes.","Я пять лет работал менеджером по продажам в одной большой компании."],["Pärast ülikooli lõpetamist töötasin kaks aastat IT-firmas.","После окончания университета я два года работал в IT-фирме."]]},
+ {who:"Intervjueerija", role:"собеседование на работу", lvl:"B2", et:"Miks te soovite just meie ettevõttes töötada?", ru:"Почему вы хотите работать именно в нашей компании?", hint:"Назови свои причины.",
+  samples:[["Teie ettevõte areneb kiiresti ja mulle meeldivad teie väärtused.","Ваша компания быстро развивается, и мне нравятся ваши ценности."],["Tahan saada uusi kogemusi ja teie valdkond huvitab mind väga.","Я хочу получить новый опыт, и ваша сфера меня очень интересует."]]},
+ {who:"Marko", role:"коллега", lvl:"B2", et:"Mis sa arvad, kas kaugtöö on parem kui kontoris töötamine?", ru:"Как думаешь, удалённая работа лучше, чем работа в офисе?", hint:"Вырази мнение и объясни его.",
+  samples:[["Minu arvates on kaugtöö mugavam, aga kolleegidega suhtlemisest jääb puudu.","По-моему, удалёнка удобнее, но не хватает общения с коллегами."],["Ma eelistan kontorit, sest seal on lihtsam keskenduda.","Я предпочитаю офис, потому что там проще сосредоточиться."]]},
+ {who:"Jaan", role:"друг", lvl:"B2", et:"Kuulsin, et elektri hind tõuseb jälle. Mis sa sellest arvad?", ru:"Слышал, что цена на электричество опять растёт. Что ты об этом думаешь?", hint:"Вырази своё мнение.",
+  samples:[["See on tõsine probleem, eriti talvel. Peame rohkem kokku hoidma.","Это серьёзная проблема, особенно зимой. Придётся больше экономить."],["Kahjuks mõjutab see kõiki. Valitsus peaks midagi ette võtma.","К сожалению, это касается всех. Правительству стоит что-то предпринять."]]},
+ {who:"Kati", role:"подруга", lvl:"B2", et:"Kas sa oled kunagi Eesti saartel käinud?", ru:"Ты когда-нибудь бывал на эстонских островах?", hint:"Расскажи о своём опыте или планах.",
+  samples:[["Jah, käisin eelmisel suvel Saaremaal ja seal oli imeline.","Да, прошлым летом я был на Сааремаа, и там было чудесно."],["Ei ole veel, aga tahaksin väga Hiiumaale minna.","Ещё нет, но очень хотел бы съездить на Хийумаа."]]},
+ {who:"Marko", role:"коллега", lvl:"B2", et:"Kas sa oleksid nõus mind järgmisel nädalal projektiga aitama?", ru:"Ты бы согласился помочь мне с проектом на следующей неделе?", hint:"Согласись с условием или откажись.",
+  samples:[["Olen nõus, kui mul endal kiireid tähtaegu ei ole.","Соглашусь, если у меня самого не будет срочных дедлайнов."],["Hea meelega, räägime homme täpsemalt.","С удовольствием, завтра обсудим подробнее."]]}
+];
+let chat = null, chatLevel = "all", chatCtl = null;
+function newChat(){
+  const pool = CHATS.filter(c=>chatLevel==="all" || c.lvl===chatLevel);
+  let c = pool[Math.floor(Math.random()*pool.length)];
+  if(chat && c===chat.sc && pool.length>1) c = pool[(pool.indexOf(c)+1) % pool.length];
+  chatCtl?.abort();
+  chat = {sc:c, turns:[{who:"them", et:c.et, ru:c.ru}], draft:"", showSamples:false, busy:false, done:false};
+}
+function chatTranscript(){
+  return chat.turns.map(t=>t.who==="them" ? `${chat.sc.who}: ${t.et}` : `Ученик: ${t.text}`).join("\n");
+}
+function renderChat(){
+  const v = $("#v-chat"); v.innerHTML = "";
+  if(!chat) newChat();
+  const c = chat.sc;
+  v.append(h(`<div><h2>Чат</h2><p class="sub">Вам пишут по-эстонски. Ответьте так, как ответили бы в жизни. Нажмите на сообщение, чтобы увидеть перевод.</p></div>`));
+  const chips = h(`<div class="chips" role="group" aria-label="Уровень"></div>`);
+  for(const [id,name] of [["all","Все"],["A2","A2"],["B1","B1"],["B2","B2"]]){
+    const n = id==="all" ? CHATS.length : CHATS.filter(x=>x.lvl===id).length;
+    const b = h(`<button class="chip" aria-pressed="${chatLevel===id}">${name} <small>${n}</small></button>`);
+    b.onclick = ()=>{ chatLevel = id; newChat(); renderChat(); };
+    chips.append(b);
+  }
+  v.append(chips);
+
+  const panel = h(`<div class="panel">
+    <div class="spread"><div class="who"><div class="avatar">${esc(c.who[0])}</div><div><b>${esc(c.who)}</b><div class="note">${esc(c.role)} · ${esc(c.lvl)}</div></div></div>
+      <button class="icon-btn" aria-label="Произнести последнее сообщение">${SPEAK_ICON}</button></div>
+    <div class="thread"></div></div>`);
+  $(".icon-btn",panel).onclick = ()=>{ const last = [...chat.turns].reverse().find(t=>t.who==="them"); if(last) speak(last.et); };
+  const thread = $(".thread",panel);
+  const titles = {correct:"Хорошо сказано", almost:"Почти", wrong:"Есть ошибки"};
+  for(const t of chat.turns){
+    if(t.who==="them"){
+      const b = h(`<button class="bubble them"><span lang="et">${esc(t.et)}</span><span class="tr" ${t.showRu?"":"hidden"}>${esc(t.ru)}</span></button>`);
+      b.onclick = ()=>{ t.showRu = !t.showRu; $(".tr",b).hidden = !t.showRu; };
+      thread.append(b);
+    } else {
+      thread.append(h(`<div class="bubble me" lang="et">${esc(t.text)}</div>`));
+      if(t.review){
+        const r = t.review;
+        const el = h(`<div class="verdict ${r.verdict}"><div class="head">${titles[r.verdict]||"Разбор"}</div></div>`);
+        if(r.feedback) el.append(h(`<div>${esc(r.feedback)}</div>`));
+        if(r.corrected && normalize(r.corrected)!==normalize(t.text)) el.append(h(`<div><span class="label">Лучше сказать</span><div class="ref" lang="et">${esc(r.corrected)}</div></div>`));
+        thread.append(el);
+      }
+    }
+  }
+  if(chat.busy) thread.append(h(`<div class="bubble them typing" aria-label="Собеседник печатает"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`));
+  v.append(panel);
+
+  const answered = chat.turns.some(t=>t.who==="me");
+  const offlineDone = !sample && answered;
+  if(!chat.done && !offlineDone && !chat.busy){
+    const comp = h(`<div class="panel">
+      <div class="note">Что ответить: ${esc(c.hint)}</div>
+      <label class="label" for="chat-answer">Ваш ответ на эстонском</label>
+      <textarea id="chat-answer" lang="et" autocapitalize="sentences" placeholder="Kirjuta siia…"></textarea>
+      <div class="row"><button class="btn primary" style="flex:1">Отправить</button><button class="btn ghost">Подсказка</button></div></div>`);
+    const ta = $("textarea",comp); ta.value = chat.draft; ta.oninput = ()=>{ chat.draft = ta.value; };
+    const [send, tip] = comp.querySelectorAll("button");
+    send.onclick = ()=>sendChat();
+    tip.onclick = ()=>{ chat.showSamples = !chat.showSamples; renderChat(); };
+    v.append(comp);
+  }
+  if((chat.showSamples || offlineDone) && chat.turns.filter(t=>t.who==="them").length===1){
+    const sm = h(`<div class="panel"><div class="label">Примеры хороших ответов</div><div class="samples">${c.samples.map(([et,ru])=>`<div><div lang="et">${esc(et)}</div><div class="ru">${esc(ru)}</div></div>`).join("")}</div></div>`);
+    v.append(sm);
+  }
+  if(offlineDone){
+    const mine = chat.turns.find(t=>t.who==="me").text;
+    v.append(claudeLink("Продолжить разговор в Claude", `Давай потренируем разговорный эстонский, мой родной язык русский, цель — уровень B2.
+Ты — ${c.who} (${c.role}). Ты написал(а) мне: «${c.et}»
+Я ответил: «${mine}»
+Сначала коротко по-русски оцени мой ответ и исправь ошибки (падежи, спряжение, порядок слов). Потом продолжи разговор в роли одной короткой репликой на эстонском (уровень ${c.lvl}–B2) и дай её перевод в скобках. Делай так после каждого моего ответа, пока разговор не закончится естественно (3–4 обмена).`));
+    v.append(h(`<p class="note">Claude проверит ответ и продолжит разговор в роли собеседника. Это входит в подписку Claude. С ключом API в настройках разговор шёл бы прямо здесь.</p>`));
+  }
+  if(chat.done) v.append(h(`<div class="done"><div class="big">Tubli!</div><div>Разговор окончен.</div></div>`));
+  const next = h(`<button class="btn ${chat.done||offlineDone?"primary":""}">Новый диалог</button>`);
+  next.onclick = ()=>{ newChat(); renderChat(); window.scrollTo(0,0); };
+  v.append(next);
+}
+async function sendChat(){
+  const text = chat.draft.trim();
+  if(!text){ toast("Сначала напишите ответ"); return; }
+  const me = {who:"me", text};
+  chat.turns.push(me); chat.draft = ""; chat.showSamples = false;
+  if(!sample){ renderChat(); return; }
+  const c = chat.sc, myChat = chat;
+  chat.busy = true; renderChat();
+  chatCtl = new AbortController();
+  const exchanges = chat.turns.filter(t=>t.who==="me").length;
+  const prompt = `Ты — ${c.who} (${c.role}) и переписываешься по-эстонски с русскоязычным учеником, который готовится к уровню B2.
+Ситуация начинается с твоей реплики: «${c.et}».
+Переписка до сих пор:
+${chatTranscript()}
+
+1) Оцени последний ответ ученика как реплику в этом разговоре: verdict (correct — естественно и без ошибок, almost — понятно, но с мелкими ошибками, wrong — серьёзные ошибки или не по смыслу). feedback — 1–2 предложения по-русски: что не так (падежи, спряжение, порядок слов, лексика) или короткая похвала. corrected — естественный исправленный вариант его ответа на эстонском.
+2) Продолжи разговор в роли одной короткой естественной репликой на эстонском уровня ${c.lvl}–B2 (reply_et) и дай её перевод на русский (reply_ru).
+Это обмен номер ${exchanges}. Если разговор естественно закончился или это уже 4-й обмен, поставь done = true и сделай reply_et прощальной репликой.`;
+  try{
+    const r = await sample.json(prompt, {schema:SCHEMA_CHAT, signal:chatCtl.signal});
+    if(chat !== myChat) return;
+    me.review = {verdict:["correct","almost","wrong"].includes(r?.verdict)?r.verdict:"almost", feedback:String(r?.feedback||""), corrected:String(r?.corrected||"")};
+    if(r?.reply_et) chat.turns.push({who:"them", et:String(r.reply_et), ru:String(r.reply_ru||"")});
+    chat.done = !!r?.done;
+  }catch(e){
+    if(chat !== myChat) return;
+    const m = sampleErr(e); if(m) toast(m);
+    chat.turns.pop(); chat.draft = text;
+  }
+  chat.busy = false;
+  if(S.tab==="chat") renderChat();
 }
 
 // ---------- Dictionary ----------
